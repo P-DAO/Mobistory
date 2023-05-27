@@ -28,8 +28,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_9
+        targetCompatibility JavaVersion.VERSION_1_9
     }
     kotlinOptions {
         jvmTarget = '1.8'
@@ -68,4 +68,7 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
     // Kotlin Extensions and Coroutine support for Room
     implementation "androidx.room:room-ktx:$room_version"
+
+    // kotlinxµ.Serializable
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
 }
