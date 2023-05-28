@@ -9,14 +9,10 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.room.Room
+import fr.uge.mobistory.database.EventDatabase
 import fr.uge.mobistory.ui.theme.MobistoryTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
@@ -24,6 +20,7 @@ import kotlinx.serialization.json.Json
 import java.io.File
 
 class MainActivity : ComponentActivity() {
+
     private lateinit var eventDatabase: EventDatabase // facilite acces pour diff parties de la classe
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -37,45 +34,59 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-//                    CoroutineScope(Dispatchers.IO).launch {
-//                        val eventImport = ImportFile()
-//                        val database = Room.databaseBuilder(
-//                            applicationContext,
-//                            EventDatabase::class.java,
-//                            "event_database"
-//                        ).build()
-//
-//                        eventImport.importEventsFromFile(this@MainActivity, database)
-//                    }
                     // Création de la base de données
                     eventDatabase = Room.databaseBuilder(
                         applicationContext,
                         EventDatabase::class.java,
                         "event_database"
                     ).build()
-
-                    // chemin du fichier .txt contenant les données JSON
-                    val jsonString = "app/res/raw/events.txt"
-
-                    // Lecture du fichier
-                    val fileContent = File(jsonString).readText()
-
-                    // désérialisation des données JSON en obj HistoricalEvent
-                    val historicalEvent = Json.decodeFromString<List<HistoricalEvent>>(fileContent)
-
-                    // Import des événements dans la base de données
-                    val eventImporter = ImportFile(eventDatabase)
                     GlobalScope.launch {
-                        eventImporter.importEvents(historicalEvent)
-                        // Les événements ont été importés avec succès
+                        // Lecture du fichier de ressource brute
+                        val fileInputStream = resources.openRawResource(R.raw.events)
+                        val fileContent = fileInputStream.bufferedReader().use { it.readText() }
 
-                        // parcourir les events et affichage des infos
-                        for (event in historicalEvent) {
+                        // Désérialisation des données JSON en objets HistoricalEvent
+                        val historicalEvents = Json.decodeFromString<List<HistoricalEvent>>(fileContent)
+
+                        // Importer les événements dans la base de données
+                        eventDatabase.historicalEventDao().upsertEvents(historicalEvents)
+
+                        // Récupérer tous les événements depuis la base de données
+                        val allEvents = eventDatabase.historicalEventDao().getAll()
+
+                        // Afficher les événements dans la console
+                        for (event in allEvents) {
                             println("Label: ${event.label}")
-//                        println("Date: ${event.date}")
                             println("Description: ${event.description}")
+//                            println("Date: ${event.date}")
+                            println("Popularity: ${event.popularity}")
+                            println("Claims: ${event.claims}")
+                            println()
                         }
                     }
+
+//                    // chemin du fichier .txt contenant les données JSON
+//                    val jsonString = "app/res/raw/events.txt"
+//
+//                    // Lecture du fichier
+//                    val fileContent = File(jsonString).readText()
+//
+//                    // désérialisation des données JSON en obj HistoricalEvent
+//                    val historicalEvent = Json.decodeFromString<List<HistoricalEvent>>(fileContent)
+//
+//                    // Import des événements dans la base de données
+//                    val eventImporter = ImportFile(eventDatabase)
+//                    GlobalScope.launch {
+//                        eventImporter.importEvents(historicalEvent)
+//                        // Les événements ont été importés avec succès
+//
+//                        // parcourir les events et affichage des infos
+//                        for (event in historicalEvent) {
+//                            println("Label: ${event.label}")
+////                        println("Date: ${event.date}")
+//                            println("Description: ${event.description}")
+//                        }
+//                    }
                 }
             }
         }

@@ -1,24 +1,14 @@
 package fr.uge.mobistory
 
-import android.content.Context
-import android.os.Build
-import androidx.annotation.RequiresApi
+import fr.uge.mobistory.database.EventDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.*
-import java.io.BufferedReader
-import java.io.File
-import java.io.FileReader
-import java.time.LocalDate
-import java.time.Month
-import java.time.ZoneId
-import java.util.*
 
 class ImportFile (private val eventDatabase: EventDatabase){
 
     suspend fun importEvents(events: List<HistoricalEvent>){
         withContext(Dispatchers.IO){
-            eventDatabase.historicalEventsDao().insertEvents(events)
+            eventDatabase.historicalEventDao().upsertEvents(events)
         }
     }
 //    @RequiresApi(Build.VERSION_CODES.O)
