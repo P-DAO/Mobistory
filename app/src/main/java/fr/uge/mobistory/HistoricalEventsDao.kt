@@ -11,7 +11,7 @@ import java.util.concurrent.Flow
 interface HistoricalEventsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE) // remplace si la ligne existe deja (maj)
-    suspend  fun insertEvents(events: List<HistoricalEvent>)
+    suspend fun insertEvents(events: List<HistoricalEvent>)
 
     @Query("SELECT * FROM historical_events")
     fun getAll(): List<HistoricalEvent>
@@ -25,6 +25,6 @@ interface HistoricalEventsDao {
 //    fun getEventsOrderByDate() : Flow<List<HistoricalEvent>>
 
     @Delete
-    suspend fun delete(event: HistoricalEvent)
+    fun delete(event: HistoricalEvent)
 
 }

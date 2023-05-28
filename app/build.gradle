@@ -63,12 +63,14 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
 
     //Room Database
-    def room_version = "2.4.0"
-    implementation "androidx.room:room-runtime:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
-    // Kotlin Extensions and Coroutine support for Room
+//    def room_version = "2.4.0"
+//    implementation "androidx.room:room-runtime:$room_version"
+//    kapt "androidx.room:room-compiler:$room_version"
+//    // Kotlin Extensions and Coroutine support for Room
+//    implementation "androidx.room:room-ktx:$room_version"
+    def room_version = "2.5.0"
     implementation "androidx.room:room-ktx:$room_version"
-
+    kapt "androidx.room:room-compiler:$room_version"
     // kotlinxµ.Serializable
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
 }
