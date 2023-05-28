@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
+    id 'kotlinx-serialization'
 }
 
 android {
@@ -66,6 +67,7 @@ dependencies {
     def room_version = "2.5.0"
     implementation "androidx.room:room-ktx:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
+
     // kotlinxµ.Serializable
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
 }

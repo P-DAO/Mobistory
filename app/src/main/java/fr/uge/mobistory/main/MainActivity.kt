@@ -1,4 +1,4 @@
-package fr.uge.mobistory
+package fr.uge.mobistory.main
 
 import android.annotation.SuppressLint
 import android.os.Build
@@ -11,13 +11,16 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.room.Room
+import fr.uge.mobistory.R
 import fr.uge.mobistory.database.EventDatabase
+import fr.uge.mobistory.historicalEvent.HistoricalEventEntity
+import fr.uge.mobistory.historicalEvent.HistoricalEvent
 import fr.uge.mobistory.ui.theme.MobistoryTheme
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import java.io.File
+import kotlin.streams.toList
 
 class MainActivity : ComponentActivity() {
 
@@ -43,13 +46,15 @@ class MainActivity : ComponentActivity() {
                     GlobalScope.launch {
                         // Lecture du fichier de ressource brute
                         val fileInputStream = resources.openRawResource(R.raw.events)
-                        val fileContent = fileInputStream.bufferedReader().use { it.readText() }
+                        val fileContent: List<String> = fileInputStream.bufferedReader().readLines()
+                        val listHistoricalEvent: List<HistoricalEvent> = fileContent.stream().map { line -> Json.decodeFromString<HistoricalEvent>(line) }.toList()
+
 
                         // Désérialisation des données JSON en objets HistoricalEvent
-                        val historicalEvents = Json.decodeFromString<List<HistoricalEvent>>(fileContent)
+                        val historicalEventEntities:List<HistoricalEventEntity> = listHistoricalEvent.stream().map { event -> event.toHistoricalEventEntity() }.toList()
 
                         // Importer les événements dans la base de données
-                        eventDatabase.historicalEventDao().upsertEvents(historicalEvents)
+                        eventDatabase.historicalEventDao().upsertEvents(historicalEventEntities)
 
                         // Récupérer tous les événements depuis la base de données
                         val allEvents = eventDatabase.historicalEventDao().getAll()
@@ -58,9 +63,6 @@ class MainActivity : ComponentActivity() {
                         for (event in allEvents) {
                             println("Label: ${event.label}")
                             println("Description: ${event.description}")
-//                            println("Date: ${event.date}")
-                            println("Popularity: ${event.popularity}")
-                            println("Claims: ${event.claims}")
                             println()
                         }
                     }

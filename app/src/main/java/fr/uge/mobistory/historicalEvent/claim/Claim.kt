@@ -1,17 +1,17 @@
-package fr.uge.mobistory
+package fr.uge.mobistory.historicalEvent.claim
 
-import fr.uge.mobistory.database.ClaimEntity
+import fr.uge.mobistory.historicalEvent.claim.ClaimEntity
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class Claim (
-    val idClaim: Int,
+    val id: Int,
     val verboseName: String?,
     val value: String?,
     val item: String?,
     val formatterUrl: String?
 ){
     fun toClaimEntity(idEvent: Int): ClaimEntity {
-        return ClaimEntity(null, idClaim, idEvent, verboseName, value, item, formatterUrl)
+        return ClaimEntity( 0, id, idEvent, verboseName, value, item, formatterUrl)
     }
 }

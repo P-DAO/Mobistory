@@ -1,21 +1,22 @@
 package fr.uge.mobistory.dao
 
 import androidx.room.*
-import fr.uge.mobistory.Claim
-import fr.uge.mobistory.HistoricalEvent
+import fr.uge.mobistory.database.HistoricalEventAndClaim
+import fr.uge.mobistory.database.HistoricalEventAndPopularity
+import fr.uge.mobistory.historicalEvent.HistoricalEventEntity
 
 @Dao
 interface HistoricalEventsDao {
 
-    @Upsert // remplace si la ligne existe deja (maj)
-    suspend fun upsertEvents(events: List<HistoricalEvent>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertEvents(events: List<HistoricalEventEntity>)
 
     @Query("SELECT * FROM historical_event")
-    fun getAll(): List<HistoricalEvent>
+    fun getAll(): List<HistoricalEventEntity>
 
     @Query("SELECT * FROM historical_event WHERE label LIKE :label AND " +
             "description LIKE :description LIMIT 1")
-    fun findByName(label: String, description: String): HistoricalEvent
+    fun findByName(label: String, description: String): HistoricalEventEntity
 
     // TODO decomm si date a bien ete recuperee
 //    @Query("SELECT * FROM historical_event ORDER BY date ASC")
@@ -23,9 +24,9 @@ interface HistoricalEventsDao {
 
     @Transaction
     @Query("SELECT * FROM historical_event")
-    fun getHistoricalEventWithClaims(): List<Claim>
+    fun getHistoricalEventWithClaims(): List<HistoricalEventAndClaim>
 
-    @Delete
-    suspend fun delete(event: HistoricalEvent)
-
+    @Transaction
+    @Query("SELECT * FROM historical_event")
+    fun getHistoricalEventWithPopularity(): List<HistoricalEventAndPopularity>
 }

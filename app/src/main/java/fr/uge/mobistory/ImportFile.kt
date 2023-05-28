@@ -6,11 +6,11 @@ import kotlinx.coroutines.withContext
 
 class ImportFile (private val eventDatabase: EventDatabase){
 
-    suspend fun importEvents(events: List<HistoricalEvent>){
-        withContext(Dispatchers.IO){
-            eventDatabase.historicalEventDao().upsertEvents(events)
-        }
-    }
+//    suspend fun importEvents(events: List<HistoricalEvent>){
+//        withContext(Dispatchers.IO){
+//            eventDatabase.historicalEventDao().upsertEvents(events)
+//        }
+//    }
 //    @RequiresApi(Build.VERSION_CODES.O)
 //    suspend fun importEventsFromFile(context: Context, database: EventDatabase) {
 //        val events = mutableListOf<HistoricalEvent>()
