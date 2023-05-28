@@ -17,7 +17,8 @@ data class HistoricalEvent(
     val aliases: String?,
     val description: String,
     val wikipedia: String?,
-    val popularity: List<Popularity>,
+    val popularity: Popularity,
+    val sourceId: Int?,
     val claims : List<Claim>
 ){
     fun toHistoricalEventEntity(): HistoricalEventEntity {
@@ -30,8 +31,8 @@ data class HistoricalEvent(
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    fun toListPopularity(): List<PopularityEntity>{
-        return popularity.stream().map { popularity -> popularity.toPopularityEntity(id) }.toList()
+    fun toListPopularity(): PopularityEntity {
+        return PopularityEntity(0, id , popularity.fr)
     }
 
 }

@@ -13,5 +13,5 @@ data class HistoricalEventAndPopularity(
         entityColumn = "eventId",
         entity = PopularityEntity::class,
     )
-    val popularyty: List<PopularityEntity>
+    val popularity: List<PopularityEntity>
 )
