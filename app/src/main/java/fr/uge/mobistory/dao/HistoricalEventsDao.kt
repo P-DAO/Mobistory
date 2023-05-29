@@ -8,7 +8,7 @@ import fr.uge.mobistory.historicalEvent.HistoricalEventEntity
 interface HistoricalEventsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun upsertEvents(events: List<HistoricalEventEntity>)
+    suspend fun insertEvents(events: List<HistoricalEventEntity>)
 
     @Query("SELECT * FROM historical_event")
     fun getAll(): List<HistoricalEventEntity>

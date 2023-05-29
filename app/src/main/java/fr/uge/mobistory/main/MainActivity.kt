@@ -16,7 +16,6 @@ import fr.uge.mobistory.R
 import fr.uge.mobistory.database.EventDatabase
 import fr.uge.mobistory.historicalEvent.HistoricalEventEntity
 import fr.uge.mobistory.historicalEvent.HistoricalEvent
-import fr.uge.mobistory.historicalEvent.claim.ClaimEntity
 import fr.uge.mobistory.ui.theme.MobistoryTheme
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -60,17 +59,23 @@ class MainActivity : ComponentActivity() {
                             .peek { event -> Log.d("Event_ENTITY", event.toString()) }
                             .toList()
 
+                        listHistoricalEvent.forEach{ event -> event.claims.forEach{
+                            val claimEntity = it.toClaimEntity(event.id)
+                            Log.d("ClaimEntity", claimEntity.toString())
+                            eventDatabase.claimDao().insertClaim(claimEntity)
+                        } }
+
                         // Importer les événements dans la base de données
-                        eventDatabase.historicalEventDao().upsertEvents(historicalEventEntities)
+                        eventDatabase.historicalEventDao().insertEvents(historicalEventEntities)
 
                         // Récupérer tous les événements depuis la base de données
                         val allEvents = eventDatabase.historicalEventDao().getAll()
 
                         // Afficher les événements dans la console
-                        for (event in allEvents) {
-                            Log.d("DEBUG_EVENT","Label: ${event.label}")
-                            Log.d("DEBUG_EVENT","Description: ${event.description}")
-                        }
+//                        for (event in allEvents) {
+//                            Log.d("DEBUG_EVENT","Label: ${event.label}")
+//                            Log.d("DEBUG_EVENT","Description: ${event.description}")
+//                        }
                     }
 
 //                    // chemin du fichier .txt contenant les données JSON

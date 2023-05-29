@@ -2,6 +2,7 @@ package fr.uge.mobistory.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import fr.uge.mobistory.dao.ClaimDao
 import fr.uge.mobistory.dao.HistoricalEventsDao
 import fr.uge.mobistory.historicalEvent.HistoricalEventEntity
 import fr.uge.mobistory.historicalEvent.claim.ClaimEntity
@@ -10,4 +11,5 @@ import fr.uge.mobistory.historicalEvent.claim.ClaimEntity
 //@TypeConverters(DateConverter::class)
 abstract class EventDatabase : RoomDatabase (){
     abstract fun historicalEventDao(): HistoricalEventsDao
+    abstract fun claimDao(): ClaimDao
 }

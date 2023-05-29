@@ -12,5 +12,5 @@ data class HistoricalEventAndClaim(
         entityColumn = "eventId",
         entity = ClaimEntity::class,
     )
-    val claim: List<ClaimEntity>
+    val claims: List<ClaimEntity>
 )
