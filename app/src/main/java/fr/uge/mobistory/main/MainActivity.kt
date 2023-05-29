@@ -10,17 +10,24 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.room.Room
 import fr.uge.mobistory.ImportEventTxt
 import fr.uge.mobistory.R
+import fr.uge.mobistory.affichage.displayAllEvents
 import fr.uge.mobistory.database.EventDatabase
 import fr.uge.mobistory.database.EventRepository
+import fr.uge.mobistory.database.HistoricalEventAndClaim
 import fr.uge.mobistory.ui.theme.MobistoryTheme
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
     private lateinit var eventRepository: EventRepository
+
+    private val eventsState = mutableStateOf(emptyList<HistoricalEventAndClaim>())
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("CoroutineCreationDuringComposition")
@@ -33,12 +40,6 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    // Création de la base de données
-//                    eventDatabase = Room.databaseBuilder(
-//                        applicationContext,
-//                        EventDatabase::class.java,
-//                        "event_database"
-//                    ).build()
                     eventRepository = EventRepository(applicationContext)
 
                     val viewModel: ImportEventTxt by viewModels()
@@ -48,6 +49,15 @@ class MainActivity : ComponentActivity() {
                     val fileContent: List<String> = fileInputStream.bufferedReader().readLines()
 
                     viewModel.importEventTxtInDataBase(fileContent, eventRepository)
+
+                    val coroutineScope = rememberCoroutineScope()
+
+                    coroutineScope.launch {
+                        val allEvents = eventRepository.getHistoricalEventWithClaims()
+                        eventsState.value = allEvents
+                    }
+                        displayAllEvents(events = eventsState.value)
+
                 }
             }
         }
