@@ -3,6 +3,7 @@ package fr.uge.mobistory.main
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -47,11 +48,19 @@ class MainActivity : ComponentActivity() {
                         // Lecture du fichier de ressource brute
                         val fileInputStream = resources.openRawResource(R.raw.events)
                         val fileContent: List<String> = fileInputStream.bufferedReader().readLines()
-                        val listHistoricalEvent: List<HistoricalEvent> = fileContent.stream().map { line -> Json.decodeFromString<HistoricalEvent>(line) }.toList()
+                        val listHistoricalEvent: List<HistoricalEvent> = fileContent.stream()
+                            .map { line -> Json{ignoreUnknownKeys = true}.decodeFromString<HistoricalEvent>(line) }
+                            .peek { event -> Log.d("event", event.toString()) }
+                            .toList()
+
 
 
                         // Désérialisation des données JSON en objets HistoricalEvent
-                        val historicalEventEntities:List<HistoricalEventEntity> = listHistoricalEvent.stream().map { event -> event.toHistoricalEventEntity() }.toList()
+                        val historicalEventEntities:List<HistoricalEventEntity> = listHistoricalEvent.stream()
+                            .map { event -> event.toHistoricalEventEntity() }
+                            .toList()
+
+
 
                         // Importer les événements dans la base de données
                         eventDatabase.historicalEventDao().upsertEvents(historicalEventEntities)
@@ -61,9 +70,8 @@ class MainActivity : ComponentActivity() {
 
                         // Afficher les événements dans la console
                         for (event in allEvents) {
-                            println("Label: ${event.label}")
-                            println("Description: ${event.description}")
-                            println()
+                            Log.d("DEBUG_EVENT","Label: ${event.label}")
+                            Log.d("DEBUG_EVENT","Description: ${event.description}")
                         }
                     }
 

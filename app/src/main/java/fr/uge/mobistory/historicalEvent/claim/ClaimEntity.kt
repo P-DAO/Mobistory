@@ -11,6 +11,6 @@ data class ClaimEntity (
         @ColumnInfo(name = "eventId") val eventId: Int,
         @ColumnInfo(name = "verboseName") val verboseName: String?,
         @ColumnInfo(name = "value") val value: String?,
-        @ColumnInfo(name = "item") val item: String?,
+//        @ColumnInfo(name = "item") val item: String?,
         @ColumnInfo(name = "formatterUrl") val formatterUrl: String?,
 )

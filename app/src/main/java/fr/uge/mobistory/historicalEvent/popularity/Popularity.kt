@@ -4,8 +4,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Popularity (
-    val en: Int?,
-    val fr: Int
+    val en: Int = -1,
+    val fr: Int = -1
 ){
     fun toPopularityEntity(idEvent: Int): PopularityEntity{
         return PopularityEntity(0, idEvent, fr)

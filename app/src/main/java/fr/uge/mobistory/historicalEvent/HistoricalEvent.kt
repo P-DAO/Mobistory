@@ -13,13 +13,13 @@ import kotlin.streams.toList
 data class HistoricalEvent(
 
     val id: Int,
-    val label: String,
-    val aliases: String?,
-    val description: String,
-    val wikipedia: String?,
-    val popularity: Popularity,
-    val sourceId: Int?,
-    val claims : List<Claim>
+    val label: String = "",
+    val aliases: String = "",
+    val description: String = "",
+    val wikipedia: String = "",
+    val popularity: Popularity = Popularity(-1, -1 ),
+    val sourceId: Int = -1,
+    val claims : List<Claim> = listOf()
 ){
     fun toHistoricalEventEntity(): HistoricalEventEntity {
         return HistoricalEventEntity(id, label, aliases, description)
