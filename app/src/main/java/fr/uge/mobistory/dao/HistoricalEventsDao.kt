@@ -2,7 +2,6 @@ package fr.uge.mobistory.dao
 
 import androidx.room.*
 import fr.uge.mobistory.database.HistoricalEventAndClaim
-import fr.uge.mobistory.database.HistoricalEventAndPopularity
 import fr.uge.mobistory.historicalEvent.HistoricalEventEntity
 
 @Dao
@@ -26,7 +25,4 @@ interface HistoricalEventsDao {
     @Query("SELECT * FROM historical_event")
     fun getHistoricalEventWithClaims(): List<HistoricalEventAndClaim>
 
-    @Transaction
-    @Query("SELECT * FROM historical_event")
-    fun getHistoricalEventWithPopularity(): List<HistoricalEventAndPopularity>
 }

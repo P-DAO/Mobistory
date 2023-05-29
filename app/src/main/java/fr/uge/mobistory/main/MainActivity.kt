@@ -16,6 +16,7 @@ import fr.uge.mobistory.R
 import fr.uge.mobistory.database.EventDatabase
 import fr.uge.mobistory.historicalEvent.HistoricalEventEntity
 import fr.uge.mobistory.historicalEvent.HistoricalEvent
+import fr.uge.mobistory.historicalEvent.claim.ClaimEntity
 import fr.uge.mobistory.ui.theme.MobistoryTheme
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -53,14 +54,11 @@ class MainActivity : ComponentActivity() {
                             .peek { event -> Log.d("event", event.toString()) }
                             .toList()
 
-
-
                         // Désérialisation des données JSON en objets HistoricalEvent
                         val historicalEventEntities:List<HistoricalEventEntity> = listHistoricalEvent.stream()
                             .map { event -> event.toHistoricalEventEntity() }
+                            .peek { event -> Log.d("Event_ENTITY", event.toString()) }
                             .toList()
-
-
 
                         // Importer les événements dans la base de données
                         eventDatabase.historicalEventDao().upsertEvents(historicalEventEntities)
