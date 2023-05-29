@@ -50,18 +50,18 @@ class MainActivity : ComponentActivity() {
                         val fileContent: List<String> = fileInputStream.bufferedReader().readLines()
                         val listHistoricalEvent: List<HistoricalEvent> = fileContent.stream()
                             .map { line -> Json{ignoreUnknownKeys = true}.decodeFromString<HistoricalEvent>(line) }
-                            .peek { event -> Log.d("event", event.toString()) }
+//                            .peek { event -> Log.d("event", event.toString()) }
                             .toList()
 
                         // Désérialisation des données JSON en objets HistoricalEvent
                         val historicalEventEntities:List<HistoricalEventEntity> = listHistoricalEvent.stream()
                             .map { event -> event.toHistoricalEventEntity() }
-                            .peek { event -> Log.d("Event_ENTITY", event.toString()) }
+//                            .peek { event -> Log.d("Event_ENTITY", event.toString()) }
                             .toList()
 
                         listHistoricalEvent.forEach{ event -> event.claims.forEach{
                             val claimEntity = it.toClaimEntity(event.id)
-                            Log.d("ClaimEntity", claimEntity.toString())
+//                            Log.d("ClaimEntity", claimEntity.toString())
                             eventDatabase.claimDao().insertClaim(claimEntity)
                         } }
 
@@ -69,37 +69,13 @@ class MainActivity : ComponentActivity() {
                         eventDatabase.historicalEventDao().insertEvents(historicalEventEntities)
 
                         // Récupérer tous les événements depuis la base de données
-                        val allEvents = eventDatabase.historicalEventDao().getAll()
+                        val allEvents = eventDatabase.historicalEventDao().getHistoricalEventWithClaims()
 
                         // Afficher les événements dans la console
-//                        for (event in allEvents) {
-//                            Log.d("DEBUG_EVENT","Label: ${event.label}")
-//                            Log.d("DEBUG_EVENT","Description: ${event.description}")
-//                        }
+                        for (event in allEvents) {
+                            Log.d("DEBUG_EVENT","Event: ${event}")
+                        }
                     }
-
-//                    // chemin du fichier .txt contenant les données JSON
-//                    val jsonString = "app/res/raw/events.txt"
-//
-//                    // Lecture du fichier
-//                    val fileContent = File(jsonString).readText()
-//
-//                    // désérialisation des données JSON en obj HistoricalEvent
-//                    val historicalEvent = Json.decodeFromString<List<HistoricalEvent>>(fileContent)
-//
-//                    // Import des événements dans la base de données
-//                    val eventImporter = ImportFile(eventDatabase)
-//                    GlobalScope.launch {
-//                        eventImporter.importEvents(historicalEvent)
-//                        // Les événements ont été importés avec succès
-//
-//                        // parcourir les events et affichage des infos
-//                        for (event in historicalEvent) {
-//                            println("Label: ${event.label}")
-////                        println("Date: ${event.date}")
-//                            println("Description: ${event.description}")
-//                        }
-//                    }
                 }
             }
         }
