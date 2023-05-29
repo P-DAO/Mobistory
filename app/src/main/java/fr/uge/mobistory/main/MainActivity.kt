@@ -13,11 +13,9 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.room.Room
 import fr.uge.mobistory.ImportEventTxt
 import fr.uge.mobistory.R
 import fr.uge.mobistory.affichage.displayAllEvents
-import fr.uge.mobistory.database.EventDatabase
 import fr.uge.mobistory.database.EventRepository
 import fr.uge.mobistory.database.HistoricalEventAndClaim
 import fr.uge.mobistory.ui.theme.MobistoryTheme
@@ -56,8 +54,7 @@ class MainActivity : ComponentActivity() {
                         val allEvents = eventRepository.getHistoricalEventWithClaims()
                         eventsState.value = allEvents
                     }
-                        displayAllEvents(events = eventsState.value)
-
+                    displayAllEvents(eventsState.value, eventRepository, coroutineScope)
                 }
             }
         }
