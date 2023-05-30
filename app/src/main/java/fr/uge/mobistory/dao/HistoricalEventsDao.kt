@@ -22,7 +22,11 @@ interface HistoricalEventsDao {
 //    fun getEventsOrderByDate() : Flow<List<HistoricalEvent>>
 
     @Transaction
+    @Query("SELECT * FROM historical_event LIMIT :limit OFFSET :offset")
+    fun getHistoricalEventWithClaims(offset: Int, limit: Int): List<HistoricalEventAndClaim>
+
+    @Transaction
     @Query("SELECT * FROM historical_event")
-    fun getHistoricalEventWithClaims(): List<HistoricalEventAndClaim>
+    fun getHistoricalEventWithClaimsAll(): List<HistoricalEventAndClaim>
 
 }

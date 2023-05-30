@@ -52,14 +52,15 @@ class MainActivity : ComponentActivity() {
                     val coroutineScope = rememberCoroutineScope()
 
                     coroutineScope.launch {
-                        val allEvents = eventRepository.getHistoricalEventWithClaims()
+                        val allEvents = eventRepository.getHistoricalEventWithClaimsAll()
                         eventsState.value = allEvents
                     }
-                    var value = eventsState.value.getOrNull(3)
-                    if(value != null){
-                        displayEvent(value)
-                    }
+//                    var value = eventsState.value.getOrNull(3)
+//                    if(value != null){
+//                        displayEvent(value)
+//                    }
 //                    displayAllEvents(eventsState.value, eventRepository, coroutineScope)
+                    displayAllEvents(eventRepository, coroutineScope)
                 }
             }
         }
