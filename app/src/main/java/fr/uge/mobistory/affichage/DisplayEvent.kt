@@ -9,9 +9,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.uge.mobistory.database.HistoricalEventAndClaim
-import fr.uge.mobistory.utils.extractDatesFromClaims
-import fr.uge.mobistory.utils.extractDescription
-import fr.uge.mobistory.utils.extractLabel
+import fr.uge.mobistory.utils.*
 
 @Composable
 fun displayEvent(event: HistoricalEventAndClaim){
@@ -41,11 +39,17 @@ fun displayEvent(event: HistoricalEventAndClaim){
                 text = "Popularity: ${event.historicalEvent.popularity.fr}",
                 fontSize = 20.sp
             )
+                // TODO créer une condition si date n'existe pas
             Text(
-                text = "Date : ${extractDatesFromClaims( event.claims)}",
+                text = "Date : ${extractDatesFromClaims(event.claims)}",
                 fontSize = 20.sp
             )
-
+                // TODO créer une condition si geo n'existe pas
+            val (latitude, longitude) = extractGeoLatitudeLongiture(extractGeo(event.claims))
+            Text(
+                text = "Coordinate :\n Latitude: ${latitude}\n Longitude: ${longitude}",
+                fontSize = 20.sp
+            )
         }
     }
 }

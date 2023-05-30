@@ -55,9 +55,9 @@ class MainActivity : ComponentActivity() {
                         val allEvents = eventRepository.getHistoricalEventWithClaims()
                         eventsState.value = allEvents
                     }
-                    var first = eventsState.value.firstOrNull()
-                    if(first != null){
-                        displayEvent(first)
+                    var value = eventsState.value.getOrNull(3)
+                    if(value != null){
+                        displayEvent(value)
                     }
 //                    displayAllEvents(eventsState.value, eventRepository, coroutineScope)
                 }
