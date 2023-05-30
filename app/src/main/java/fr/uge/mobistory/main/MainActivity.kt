@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import fr.uge.mobistory.ImportEventTxt
 import fr.uge.mobistory.R
 import fr.uge.mobistory.affichage.displayAllEvents
+import fr.uge.mobistory.affichage.displayEvent
 import fr.uge.mobistory.database.EventRepository
 import fr.uge.mobistory.database.HistoricalEventAndClaim
 import fr.uge.mobistory.ui.theme.MobistoryTheme
@@ -54,7 +55,11 @@ class MainActivity : ComponentActivity() {
                         val allEvents = eventRepository.getHistoricalEventWithClaims()
                         eventsState.value = allEvents
                     }
-                    displayAllEvents(eventsState.value, eventRepository, coroutineScope)
+                    var first = eventsState.value.firstOrNull()
+                    if(first != null){
+                        displayEvent(first)
+                    }
+//                    displayAllEvents(eventsState.value, eventRepository, coroutineScope)
                 }
             }
         }

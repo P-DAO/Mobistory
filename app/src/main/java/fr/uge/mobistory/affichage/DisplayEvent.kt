@@ -9,6 +9,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.uge.mobistory.database.HistoricalEventAndClaim
+import fr.uge.mobistory.utils.extractDatesFromClaims
+import fr.uge.mobistory.utils.extractDescription
+import fr.uge.mobistory.utils.extractLabel
 
 @Composable
 fun displayEvent(event: HistoricalEventAndClaim){
@@ -25,23 +28,23 @@ fun displayEvent(event: HistoricalEventAndClaim){
         modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = event.historicalEvent.label,
+                text = "${extractLabel(event)}",
                 style = MaterialTheme.typography.h6,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-//            Text(
-//                text = event.historicalEvent.description,
-//                fontSize = 20.sp
-//            )
+            Text(
+                text = "Description:\n ${extractDescription(event)}",
+                fontSize = 20.sp
+            )
             Text(
                 text = "Popularity: ${event.historicalEvent.popularity.fr}",
                 fontSize = 20.sp
             )
-//            Text(
-//                text = "Claims: ${event.claims}",
-//                fontSize = 20.sp
-//            )
+            Text(
+                text = "Date : ${extractDatesFromClaims( event.claims)}",
+                fontSize = 20.sp
+            )
 
         }
     }
