@@ -1,5 +1,6 @@
 package fr.uge.mobistory.affichage
 
+import android.app.usage.EventStats
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,10 +21,10 @@ fun displayAllEvents(
     coroutineScope: CoroutineScope
 ) {
     val lazyListState = rememberLazyListState()
-    val events = remember { mutableStateListOf<HistoricalEventAndClaim>() }
+    var events: List<HistoricalEventAndClaim> by remember { mutableStateOf(listOf()) }
 
     LaunchedEffect(Unit) {
-        loadNextEvents(eventRepository, events, coroutineScope)
+        events = eventRepository.getHistoricalEventWithClaimsAll()
     }
 
     LazyColumn(
@@ -36,32 +37,4 @@ fun displayAllEvents(
             displayEvent(event = event)
         }
     }
-
-    LaunchedEffect(lazyListState) {
-        snapshotFlow { lazyListState.firstVisibleItemIndex }
-            .collect { firstVisibleItem ->
-                val totalItemCount = lazyListState.layoutInfo.totalItemsCount
-                val lastVisibleItem =
-                    firstVisibleItem + lazyListState.layoutInfo.visibleItemsInfo.size
-
-                if (lastVisibleItem >= totalItemCount - 1) {
-                    loadNextEvents(eventRepository, events, coroutineScope)
-                }
-            }
-    }
 }
-
-fun loadNextEvents(
-    eventRepository: EventRepository,
-    events: MutableList<HistoricalEventAndClaim>,
-    coroutineScope: CoroutineScope
-) {
-    coroutineScope.launch {
-        val offset = events.size
-        val limit = 20 // Nombre d'événements à charger à chaque fois
-
-        val nextEvents = eventRepository.getHistoricalEventWithClaims(offset, limit)
-        events.addAll(nextEvents)
-    }
-}
-

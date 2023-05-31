@@ -29,12 +29,6 @@ class EventRepository(applicationContext: Context) {
         claimDao.insertClaim(claim)
     }
 
-    suspend fun getHistoricalEventWithClaims(offset: Int, limit: Int): List<HistoricalEventAndClaim>{
-        return withContext(Dispatchers.IO){
-            historicalEventsDao.getHistoricalEventWithClaims(offset, limit)
-        }
-    }
-
     suspend fun getHistoricalEventWithClaimsAll(): List<HistoricalEventAndClaim>{
         return withContext(Dispatchers.IO){
             historicalEventsDao.getHistoricalEventWithClaimsAll()
