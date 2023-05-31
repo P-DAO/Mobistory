@@ -12,13 +12,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fr.uge.mobistory.database.EventRepository
 import fr.uge.mobistory.database.HistoricalEventAndClaim
+import fr.uge.mobistory.tri.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
 fun displayAllEvents(
     eventRepository: EventRepository,
-    coroutineScope: CoroutineScope
+    sortType: SortType
 ) {
     val lazyListState = rememberLazyListState()
     var events: List<HistoricalEventAndClaim> by remember { mutableStateOf(listOf()) }
@@ -33,6 +34,14 @@ fun displayAllEvents(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        val sortedEvents = when (sortType) {
+            SortType.DATE -> sortByDate(events)
+            SortType.LABEL -> sortByLabel(events)
+            SortType.LOCATION -> sortByLocation(events)
+            SortType.POPULARITY -> sortByPopularity(events)
+        }
+        events = sortedEvents
+
         items(events) { event ->
             displayEvent(event = event)
         }
