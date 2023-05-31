@@ -15,10 +15,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import fr.uge.mobistory.ImportEventTxt
 import fr.uge.mobistory.R
+import fr.uge.mobistory.affichage.MainDisplayer
 import fr.uge.mobistory.affichage.displayAllEvents
 import fr.uge.mobistory.affichage.displayEvent
 import fr.uge.mobistory.database.EventRepository
 import fr.uge.mobistory.database.HistoricalEventAndClaim
+import fr.uge.mobistory.tri.SortType
 import fr.uge.mobistory.ui.theme.MobistoryTheme
 import kotlinx.coroutines.launch
 
@@ -60,7 +62,8 @@ class MainActivity : ComponentActivity() {
 //                        displayEvent(value)
 //                    }
 //                    displayAllEvents(eventsState.value, eventRepository, coroutineScope)
-                    displayAllEvents(eventRepository, coroutineScope)
+//                    displayAllEvents(eventRepository, SortType.DATE)
+                    MainDisplayer(eventRepository = eventRepository)
                 }
             }
         }
