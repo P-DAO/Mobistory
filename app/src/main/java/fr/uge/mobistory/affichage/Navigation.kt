@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import fr.uge.mobistory.tri.SortType
 
 @Composable
 fun DrawerHeader() {
@@ -28,7 +29,7 @@ fun DrawerHeader() {
 fun DrawerBody(
     items: List<MenuItem>,
     modifier: Modifier = Modifier,
-    onItemClick: (MenuItem) -> Unit
+    onItemClick: (MenuItem) -> Unit,
 ) {
     LazyColumn(modifier) {
         items(items) { item ->
@@ -46,7 +47,23 @@ fun DrawerBody(
                     text = item.title,
                     fontSize = 18.sp,
                     modifier = Modifier.weight(1f)
+                        .clickable {
+                            onItemClick(item)
+                        }
                 )
+            }
+        }
+    }
+}
+
+
+fun handleMenuItemClick(menuItem: MenuItem, onSortTypeSelected: (SortType) -> Unit) {
+    when (menuItem.id) {
+        "tri" -> {
+            when (menuItem.contentDescription) {
+                "Tri par date" -> onSortTypeSelected.invoke(SortType.DATE)
+                "Tri par label" -> onSortTypeSelected.invoke(SortType.LABEL)
+                // TODO Ajouter d'autres cas d'options de tri, popularity, localisation
             }
         }
     }
