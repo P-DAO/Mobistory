@@ -28,10 +28,7 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.List
-import androidx.compose.material.icons.rounded.Menu
-import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -56,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import fr.uge.mobistory.R
 import fr.uge.mobistory.database.EventRepository
 import fr.uge.mobistory.database.HistoricalEventAndClaim
+import fr.uge.mobistory.menu.DropDownMenu
 import fr.uge.mobistory.tri.SortType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -89,8 +87,9 @@ fun MainDisplayer(eventRepository: EventRepository) {
 
     val listMenu = listOf(
         DrawerMenuItem(icon = Icons.Rounded.Home, label = "Home"),
+        DrawerMenuItem(icon = Icons.Rounded.List, label = "Events"),//TODO on a perdu le titre
         DrawerMenuItem(icon = Icons.Rounded.Search, label = "Event"),
-        DrawerMenuItem(icon = Icons.Rounded.List, label = "Events"),
+        DrawerMenuItem(icon = Icons.Rounded.Star, label = "Favoris"),
         DrawerMenuItem(icon = ImageVector.vectorResource(id = R.drawable.baseline_question_answer_24), label = "Quiz"),
         DrawerMenuItem(icon = ImageVector.vectorResource(id = R.drawable.frise_chrono_icon_24), label = "Timeline")
     )
@@ -129,7 +128,7 @@ fun MainDisplayer(eventRepository: EventRepository) {
         drawerGesturesEnabled = true,
     ) {
         when (displayState) {
-            DisplayState.EVENTS -> { displayAllEvents(eventRepository, SortType.DATE) }
+            DisplayState.EVENTS -> { displayAllEvents(eventRepository, sortType, true) }
             DisplayState.EVENT -> {
                 if (event != "") {
                     val newEvent = events.filter { events -> event == events.historicalEvent.label }.first()
@@ -144,7 +143,7 @@ fun MainDisplayer(eventRepository: EventRepository) {
 
 @Composable
 fun DisplayDrawer(listMenu: List<DrawerMenuItem>, state: (DisplayState) -> Unit, coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
-    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(modifier = Modifier.fillMaxSize().padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         Box(modifier = Modifier
             .size(126.dp)
             .clip(CircleShape), contentAlignment = Alignment.Center) {
@@ -230,4 +229,3 @@ fun EventList(listEvent: List<HistoricalEventAndClaim>, state: MutableState<Text
         }
     }
 }
-

@@ -5,24 +5,30 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.sp
 import fr.uge.mobistory.R
 import fr.uge.mobistory.tri.SortType
+import fr.uge.mobistory.tri.sortByDate
 
 @Composable
 fun DropDownMenu(
     onSortTypeSelected: (SortType) -> Unit
 ) {
-    val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
+    var selectedSortType by remember { mutableStateOf(SortType.DATE) } // Option de tri sélectionnée
 
+    val context = LocalContext.current
+    Text(text = "Mobistory",
+        fontSize = 20.sp,
+        color = Color.White,
+    )
     Box(
         Modifier
             .fillMaxWidth()
@@ -34,14 +40,14 @@ fun DropDownMenu(
                 contentDescription = "Tri"
             )
         }
-
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
             DropdownMenuItem(
                 onClick = {
-                    onSortTypeSelected.invoke(SortType.DATE)
+                    selectedSortType = SortType.DATE // Mettre à jour l'option de tri sélectionnée
+                    onSortTypeSelected.invoke(selectedSortType)
                     expanded = false
                 }
             ) {
@@ -49,7 +55,8 @@ fun DropDownMenu(
             }
             DropdownMenuItem(
                 onClick = {
-                    onSortTypeSelected.invoke(SortType.LABEL)
+                    selectedSortType = SortType.LABEL // Mettre à jour l'option de tri sélectionnée
+                    onSortTypeSelected.invoke(selectedSortType)
                     expanded = false
                 }
             ) {

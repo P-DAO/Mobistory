@@ -11,6 +11,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -79,10 +80,10 @@ fun displayEvent(event: HistoricalEventAndClaim) {
                 modifier = Modifier.padding(8.dp)
             ) {
                 var isFavorite by remember { mutableStateOf(event.historicalEvent.isFavorite) }
-                val iconTint = if(isFavorite) Color.Red else Color.Gray
+                val iconTint = if(isFavorite) Color.Yellow else Color.Gray
 
                 Icon(
-                    imageVector = Icons.Default.Favorite,
+                    imageVector = Icons.Default.Star,
                     contentDescription = "Favori",
                     tint = iconTint,
                     modifier = Modifier.size(24.dp).clickable {
