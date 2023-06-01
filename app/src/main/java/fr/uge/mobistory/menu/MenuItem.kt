@@ -1,4 +1,4 @@
-package fr.uge.mobistory.affichage
+package fr.uge.mobistory.menu
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -8,5 +8,5 @@ data class MenuItem(
     val title: String,
     val contentDescription: String,
     val icon: ImageVector,
-    val content: (@Composable () -> Unit)? = null
+//    val content: (@Composable () -> Unit)? = null
 )

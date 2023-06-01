@@ -21,7 +21,7 @@ data class HistoricalEvent(
     val claims : List<Claim> = listOf()
 ){
     fun toHistoricalEventEntity(): HistoricalEventEntity {
-        return HistoricalEventEntity(id, label, aliases, description, popularity)
+        return HistoricalEventEntity(id, label, aliases, description, false, popularity)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)

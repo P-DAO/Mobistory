@@ -19,7 +19,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun displayAllEvents(
     eventRepository: EventRepository,
-    sortType: SortType
+    sortType: SortType,
+    showFavoritesOnly: Boolean
 ) {
     val lazyListState = rememberLazyListState()
     var events: List<HistoricalEventAndClaim> by remember { mutableStateOf(listOf()) }
@@ -41,6 +42,12 @@ fun displayAllEvents(
             SortType.POPULARITY -> sortByPopularity(events)
         }
         events = sortedEvents
+
+        val filteredEvents = if (showFavoritesOnly) {
+            sortedEvents.filter { it.historicalEvent.isFavorite }
+        } else {
+            sortedEvents
+        }
 
         items(events) { event ->
             displayEvent(event = event)

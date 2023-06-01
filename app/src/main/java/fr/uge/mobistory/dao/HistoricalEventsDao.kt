@@ -10,6 +10,9 @@ interface HistoricalEventsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEvents(events: List<HistoricalEventEntity>)
 
+    @Update
+    fun updateEvent(event: HistoricalEventEntity)
+
     @Query("SELECT * FROM historical_event")
     fun getAll(): List<HistoricalEventEntity>
 

@@ -1,4 +1,4 @@
-package fr.uge.mobistory.affichage
+package fr.uge.mobistory.menu
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
@@ -25,13 +25,6 @@ fun DropDownMenu(
             .fillMaxWidth()
             .wrapContentSize(Alignment.TopEnd)
     ) {
-        IconButton(onClick = { expanded = !expanded }) {
-            Icon(
-                imageVector = Icons.Default.MoreVert,
-                contentDescription = "Tri"
-            )
-        }
-
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }

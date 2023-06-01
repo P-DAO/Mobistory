@@ -1,4 +1,4 @@
-package fr.uge.mobistory.affichage
+package fr.uge.mobistory.menu
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -30,6 +30,9 @@ fun DrawerBody(
     items: List<MenuItem>,
     modifier: Modifier = Modifier,
     onItemClick: (MenuItem) -> Unit,
+    onExpandMenu: () -> Unit,
+    expanded: Boolean,
+    onSortTypeSelected: (SortType) -> Unit, sortType: SortType
 ) {
     LazyColumn(modifier) {
         items(items) { item ->
@@ -37,7 +40,11 @@ fun DrawerBody(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        onItemClick(item)
+                        if (item.id == "tri") {
+                            onExpandMenu()
+                        } else {
+                            onItemClick(item)
+                        }
                     }
                     .padding(16.dp)
             ) {
@@ -47,23 +54,12 @@ fun DrawerBody(
                     text = item.title,
                     fontSize = 18.sp,
                     modifier = Modifier.weight(1f)
-                        .clickable {
-                            onItemClick(item)
-                        }
                 )
             }
-        }
-    }
-}
 
-
-fun handleMenuItemClick(menuItem: MenuItem, onSortTypeSelected: (SortType) -> Unit) {
-    when (menuItem.id) {
-        "tri" -> {
-            when (menuItem.contentDescription) {
-                "Tri par date" -> onSortTypeSelected.invoke(SortType.DATE)
-                "Tri par label" -> onSortTypeSelected.invoke(SortType.LABEL)
-                // TODO Ajouter d'autres cas d'options de tri, popularity, localisation
+            // Sous-menu de tri
+            if (item.id == "tri") {
+                DropDownMenu(onSortTypeSelected = onSortTypeSelected)
             }
         }
     }
