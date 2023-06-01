@@ -141,11 +141,16 @@ class MainActivity : ComponentActivity() {
 //                        displayEvent(value)
 //                    }
 //                    displayAllEvents(eventsState.value, eventRepository, coroutineScope)
+
+//                    displayAllEvents(eventRepository, SortType.DATE)
+                    MainDisplayer(eventRepository = eventRepository)
+
                     displayAllEvents(eventRepository, sortType, showFavoritesOnly)
 
 //                    DropDownMenu() {
 //                        sortType = it
 //                    }
+
                 }
             }
         }

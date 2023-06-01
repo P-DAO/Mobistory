@@ -10,7 +10,10 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.vectorResource
+import fr.uge.mobistory.R
 import fr.uge.mobistory.tri.SortType
 
 @Composable
@@ -25,6 +28,13 @@ fun DropDownMenu(
             .fillMaxWidth()
             .wrapContentSize(Alignment.TopEnd)
     ) {
+        IconButton(onClick = { expanded = !expanded }) {
+            Icon(
+                imageVector = ImageVector.vectorResource(id = R.drawable.baseline_sort_24),
+                contentDescription = "Tri"
+            )
+        }
+
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
