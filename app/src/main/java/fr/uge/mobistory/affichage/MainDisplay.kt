@@ -56,9 +56,6 @@ import androidx.compose.ui.unit.dp
 import fr.uge.mobistory.R
 import fr.uge.mobistory.database.EventRepository
 import fr.uge.mobistory.database.HistoricalEventAndClaim
-import fr.uge.mobistory.historicalEvent.HistoricalEvent
-import fr.uge.mobistory.historicalEvent.HistoricalEventEntity
-import fr.uge.mobistory.historicalEvent.popularity.Popularity
 import fr.uge.mobistory.tri.SortType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -113,7 +110,7 @@ fun MainDisplayer(eventRepository: EventRepository) {
                         DisplayState.EVENT -> {
                             Column {
                                 SearchView(state = textState) }
-                                eventList(listEvent = events, state = textState, event = {newEvent -> event = newEvent})
+                                EventList(listEvent = events, state = textState, event = {newEvent -> event = newEvent})
                             }
                         DisplayState.EVENTS -> { DropDownMenu { newSortType -> sortType = newSortType } }
                         else -> {}
@@ -122,7 +119,7 @@ fun MainDisplayer(eventRepository: EventRepository) {
             )
         },
         drawerContent = {
-            displayDrawer(
+            DisplayDrawer(
                 listMenu = listMenu,
                 state = { newState -> displayState = newState },
                 coroutineScope = coroutineScope,
@@ -139,14 +136,14 @@ fun MainDisplayer(eventRepository: EventRepository) {
                     displayEvent(event = newEvent)
                 }
             }
-            DisplayState.HOME -> { Text("Mobistory") }
-            else -> {}
+            DisplayState.HOME -> { Text("évènement du jour a faire") }
+            DisplayState.TIMELINE -> { Text("frise chronologique a faire")}
         }
     }
 }
 
 @Composable
-fun displayDrawer(listMenu: List<DrawerMenuItem>, state: (DisplayState) -> Unit, coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
+fun DisplayDrawer(listMenu: List<DrawerMenuItem>, state: (DisplayState) -> Unit, coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Box(modifier = Modifier
             .size(126.dp)
@@ -209,7 +206,7 @@ fun SearchView(state: MutableState<TextFieldValue>) {
 }
 
 @Composable
-fun eventListItem(label: String, onItemClick: (String) -> Unit) {
+fun EventListItem(label: String, onItemClick: (String) -> Unit) {
     Text(
         modifier = Modifier.clickable( onClick = { onItemClick(label) } ),
         text = label
@@ -217,19 +214,19 @@ fun eventListItem(label: String, onItemClick: (String) -> Unit) {
 }
 
 @Composable
-fun eventList(listEvent: List<HistoricalEventAndClaim>, state: MutableState<TextFieldValue>, event: (String) -> Unit) {
+fun EventList(listEvent: List<HistoricalEventAndClaim>, state: MutableState<TextFieldValue>, event: (String) -> Unit) {
     var filteredEvent: ArrayList<String>
     LazyColumn() {
         val searchedText = state.value.text
         val resultList = ArrayList<String>()
-        for (event in listEvent) {
-            val label = event.historicalEvent.label
+        for (_event in listEvent) {
+            val label = _event.historicalEvent.label
             if (label.lowercase(Locale.getDefault()).contains(searchedText.lowercase(Locale.getDefault())))
                 resultList.add(label)
         }
         filteredEvent = resultList
         items(filteredEvent) { filteredEvent ->
-            eventListItem(label = filteredEvent, onItemClick = { selectedEvent -> event(selectedEvent) })
+            EventListItem(label = filteredEvent, onItemClick = { selectedEvent -> event(selectedEvent) })
         }
     }
 }
