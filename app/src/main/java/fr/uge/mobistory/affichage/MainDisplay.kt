@@ -81,9 +81,7 @@ fun MainDisplayer(eventRepository: EventRepository) {
     val textState = remember { mutableStateOf(TextFieldValue("")) }
     var sortType by rememberSaveable { mutableStateOf(SortType.DATE) }
     var events: List<HistoricalEventAndClaim> by remember { mutableStateOf(listOf()) }
-    var event by rememberSaveable {
-        mutableStateOf(HistoricalEventAndClaim(HistoricalEventEntity(-1, "", "", "", Popularity()), listOf()))
-    }
+    var event by rememberSaveable { mutableStateOf("") }
 
     val coroutineScope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
@@ -136,7 +134,10 @@ fun MainDisplayer(eventRepository: EventRepository) {
         when (displayState) {
             DisplayState.EVENTS -> { displayAllEvents(eventRepository, SortType.DATE) }
             DisplayState.EVENT -> {
-                displayEvent(event = event);
+                if (event != "") {
+                    val newEvent = events.filter { events -> event == events.historicalEvent.label }.first()
+                    displayEvent(event = newEvent)
+                }
             }
             DisplayState.HOME -> { Text("Mobistory") }
             else -> {}
@@ -216,7 +217,7 @@ fun eventListItem(label: String, onItemClick: (String) -> Unit) {
 }
 
 @Composable
-fun eventList(listEvent: List<HistoricalEventAndClaim>, state: MutableState<TextFieldValue>, event: (HistoricalEventAndClaim) -> Unit) {
+fun eventList(listEvent: List<HistoricalEventAndClaim>, state: MutableState<TextFieldValue>, event: (String) -> Unit) {
     var filteredEvent: ArrayList<String>
     LazyColumn() {
         val searchedText = state.value.text
@@ -228,7 +229,7 @@ fun eventList(listEvent: List<HistoricalEventAndClaim>, state: MutableState<Text
         }
         filteredEvent = resultList
         items(filteredEvent) { filteredEvent ->
-            eventListItem(label = filteredEvent, onItemClick = { selectedEvent -> event(listEvent[])})
+            eventListItem(label = filteredEvent, onItemClick = { selectedEvent -> event(selectedEvent) })
         }
     }
 }
