@@ -25,10 +25,10 @@ fun DropDownMenu(
     var selectedSortType by remember { mutableStateOf(SortType.DATE) } // Option de tri sélectionnée
 
     val context = LocalContext.current
-    Text(text = "Mobistory",
-        fontSize = 20.sp,
-        color = Color.White,
-    )
+//    Text(text = "Mobistory",
+//        fontSize = 20.sp,
+//        color = Color.White,
+//    )
     Box(
         Modifier
             .fillMaxWidth()
@@ -61,6 +61,15 @@ fun DropDownMenu(
                 }
             ) {
                 Text("Trier par label")
+            }
+            DropdownMenuItem(
+                onClick = {
+                    selectedSortType = SortType.POPULARITY // Mettre à jour l'option de tri sélectionnée
+                    onSortTypeSelected.invoke(selectedSortType)
+                    expanded = false
+                }
+            ) {
+                Text("Trier par popularité")
             }
         }
     }

@@ -1,6 +1,8 @@
 package fr.uge.mobistory.affichage
 
 import android.app.usage.EventStats
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +18,7 @@ import fr.uge.mobistory.tri.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun displayAllEvents(
     eventRepository: EventRepository,

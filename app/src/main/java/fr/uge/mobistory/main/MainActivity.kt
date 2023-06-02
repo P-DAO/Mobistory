@@ -50,6 +50,9 @@ class MainActivity : ComponentActivity() {
                     // Lecture du fichier de ressource brute
                     val fileInputStream = resources.openRawResource(R.raw.events)
                     val fileContent: List<String> = fileInputStream.bufferedReader().readLines()
+//                        .useLines { lineSeq ->
+//                        lineSeq.forEach {  }
+//                    } //TODO séquence de line
 
                     viewModel.importEventTxtInDataBase(fileContent, eventRepository)
 
