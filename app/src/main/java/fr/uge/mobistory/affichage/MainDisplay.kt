@@ -54,6 +54,8 @@ import fr.uge.mobistory.R
 import fr.uge.mobistory.database.EventRepository
 import fr.uge.mobistory.database.HistoricalEventAndClaim
 import fr.uge.mobistory.menu.DropDownMenu
+import fr.uge.mobistory.menu.EventList
+import fr.uge.mobistory.menu.SearchMenuState
 import fr.uge.mobistory.tri.SortType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -77,6 +79,7 @@ fun MainDisplayer(eventRepository: EventRepository) {
     var sortType by rememberSaveable { mutableStateOf(SortType.DATE) }
     var events: List<HistoricalEventAndClaim> by remember { mutableStateOf(listOf()) }
     var event by rememberSaveable { mutableStateOf("") }
+    var searchState by rememberSaveable { mutableStateOf(SearchMenuState.OPEN) }
 
     val coroutineScope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
@@ -108,8 +111,7 @@ fun MainDisplayer(eventRepository: EventRepository) {
                     when (displayState) {
                         DisplayState.EVENT -> {
                             Column {
-                                SearchView(state = textState) }
-                                EventList(listEvent = events, state = textState, event = {newEvent -> event = newEvent})
+                                SearchView(state = textState, searchState = { searchState = it }) }
                             }
                         DisplayState.EVENTS -> { DropDownMenu { newSortType -> sortType = newSortType } }
                         else -> {}
@@ -130,9 +132,14 @@ fun MainDisplayer(eventRepository: EventRepository) {
         when (displayState) {
             DisplayState.EVENTS -> { displayAllEvents(eventRepository, sortType, true) }
             DisplayState.EVENT -> {
-                if (event != "") {
-                    val newEvent = events.filter { events -> event == events.historicalEvent.label }.first()
-                    displayEvent(event = newEvent)
+                when (searchState) {
+                    SearchMenuState.OPEN -> {
+                        EventList(listEvent = events, state = textState, event = {newEvent -> event = newEvent}, searchState = {searchState = it})
+                    }
+                    SearchMenuState.CLOSE -> {
+                        val newEvent = events.first { events -> event == events.historicalEvent.label }
+                        displayEvent(event = newEvent)
+                    }
                 }
             }
             DisplayState.HOME -> { Text("évènement du jour a faire") }
@@ -143,7 +150,9 @@ fun MainDisplayer(eventRepository: EventRepository) {
 
 @Composable
 fun DisplayDrawer(listMenu: List<DrawerMenuItem>, state: (DisplayState) -> Unit, coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
-    Column(modifier = Modifier.fillMaxSize().padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         Box(modifier = Modifier
             .size(126.dp)
             .clip(CircleShape), contentAlignment = Alignment.Center) {
@@ -188,44 +197,25 @@ fun DisplayDrawer(listMenu: List<DrawerMenuItem>, state: (DisplayState) -> Unit,
 }
 
 @Composable
-fun SearchView(state: MutableState<TextFieldValue>) {
+fun SearchView(state: MutableState<TextFieldValue>, searchState: (SearchMenuState) -> Unit) {
     Box(
         Modifier
             .fillMaxHeight()
-            .width(150.dp)) {
+            .width(150.dp)
+    ) {
         TextField(
             value = state.value,
-            onValueChange = { value -> state.value = value },
+            onValueChange = { value ->
+                state.value = value
+                searchState(SearchMenuState.OPEN) },
             leadingIcon = { Icon(imageVector = Icons.Rounded.Search, contentDescription = "searchEvent") },
             singleLine = true,
             shape = RectangleShape,
-            colors = TextFieldDefaults.textFieldColors( leadingIconColor = Color.White, textColor = Color.White, cursorColor = Color.White)
+            colors = TextFieldDefaults.textFieldColors( leadingIconColor = Color.White, textColor = Color.White, cursorColor = Color.White),
         )
     }
 }
 
-@Composable
-fun EventListItem(label: String, onItemClick: (String) -> Unit) {
-    Text(
-        modifier = Modifier.clickable( onClick = { onItemClick(label) } ),
-        text = label
-    )
-}
 
-@Composable
-fun EventList(listEvent: List<HistoricalEventAndClaim>, state: MutableState<TextFieldValue>, event: (String) -> Unit) {
-    var filteredEvent: ArrayList<String>
-    LazyColumn() {
-        val searchedText = state.value.text
-        val resultList = ArrayList<String>()
-        for (_event in listEvent) {
-            val label = _event.historicalEvent.label
-            if (label.lowercase(Locale.getDefault()).contains(searchedText.lowercase(Locale.getDefault())))
-                resultList.add(label)
-        }
-        filteredEvent = resultList
-        items(filteredEvent) { filteredEvent ->
-            EventListItem(label = filteredEvent, onItemClick = { selectedEvent -> event(selectedEvent) })
-        }
-    }
-}
+
+
