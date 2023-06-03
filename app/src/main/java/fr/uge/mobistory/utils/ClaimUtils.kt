@@ -7,13 +7,16 @@ import fr.uge.mobistory.historicalEvent.claim.ClaimEntity
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+/**
+ * Extraction de la date
+ */
 @RequiresApi(Build.VERSION_CODES.O)
 fun extractDatesFromClaims(claims: List<ClaimEntity>): String? {
     val datePeriod = extractDatesPeriodFromClaims(claims);
     return if (datePeriod.first != null && datePeriod.second == null) {
         " ${datePeriod.first}"
     } else if(datePeriod.first != null && datePeriod.first == datePeriod.second) {
-        " ${datePeriod.first}"
+        extractDatesPunctualFromClaims(claims)
     }else if (datePeriod.first != null && datePeriod.second != null) {
         " de ${datePeriod.first} à ${datePeriod.second}"
     } else {
