@@ -61,6 +61,7 @@ import fr.uge.mobistory.menu.EventList
 import fr.uge.mobistory.menu.SearchMenuState
 import fr.uge.mobistory.quiz.Quiz
 import fr.uge.mobistory.tri.SortType
+import fr.uge.mobistory.utils.extractLabel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -93,8 +94,6 @@ fun MainDisplayer(eventRepository: EventRepository) {
     LaunchedEffect(Unit) {
         events = eventRepository.getHistoricalEventWithClaimsAll()
     }
-
-
 
     val listMenu = listOf(
         DrawerMenuItem(icon = Icons.Rounded.Home, label = "Home"),
@@ -145,7 +144,7 @@ fun MainDisplayer(eventRepository: EventRepository) {
                         EventList(listEvent = events, state = textState, event = {newEvent -> event = newEvent}, searchState = {searchState = it})
                     }
                     SearchMenuState.CLOSE -> {
-                        val newEvent = events.first { events -> event == events.historicalEvent.label }
+                        val newEvent = events.first { events -> event == extractLabel(events) }
                         displayEvent(event = newEvent)
                     }
                 }

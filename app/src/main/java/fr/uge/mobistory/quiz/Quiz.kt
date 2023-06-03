@@ -28,6 +28,7 @@ import fr.uge.mobistory.database.HistoricalEventAndClaim
 import fr.uge.mobistory.historicalEvent.HistoricalEventEntity
 import fr.uge.mobistory.utils.extractDatesFromClaims
 import fr.uge.mobistory.utils.extractLabel
+import java.util.Date
 
 enum class QuizState {
     START,
@@ -53,14 +54,16 @@ enum class QuizState {
     }
 }
 
-private fun minOfDate(event1: HistoricalEventAndClaim, event2: HistoricalEventAndClaim): HistoricalEventEntity {
-    val date1 = extractDatesFromClaims(event1.claims)
-    val date2 = extractDatesFromClaims(event2.claims)
+//private fun extractDateFromString(date: String): Date {
+//
+//}
 
-    if (date1.first!! < date2.first!!)
-        return event1.historicalEvent
-    return event2.historicalEvent
-}
+//private fun minOfDate(event1: HistoricalEventAndClaim, event2: HistoricalEventAndClaim): Boolean {
+//    val date1 = extractDatesFromClaims(event1.claims)
+//    val date2 = extractDatesFromClaims(event2.claims)
+//
+//
+//}
 
 @Composable
 fun Quiz(events: List<HistoricalEventAndClaim>) {
@@ -113,8 +116,6 @@ fun DisplayRandomEvent(events: List<HistoricalEventAndClaim>, state: QuizState, 
     while (event2 == event1)
         event2 = events.random()
 
-    val date1 = extractDatesFromClaims(event1.claims).first
-    val date2 = extractDatesFromClaims(event2.claims).first
     val firstEvent = extractLabel(event1)!!
     val secondEvent = extractLabel(event2)!!
 
