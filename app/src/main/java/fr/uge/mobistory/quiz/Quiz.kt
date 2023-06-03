@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -64,23 +65,34 @@ private fun minOfDate(event1: HistoricalEventAndClaim, event2: HistoricalEventAn
 @Composable
 fun Quiz(events: List<HistoricalEventAndClaim>) {
     var state by rememberSaveable { mutableStateOf(QuizState.START) }
+    var point by rememberSaveable { mutableStateOf(0) }
+    var answer by rememberSaveable { mutableStateOf("") }
     
     when (state) {
-        QuizState.START -> { StartButton(state = { state = it } ) }
+        QuizState.START -> {
+            StartButton(state = { state = it } )
+            point = 0
+        }
         QuizState.END -> {
             Box(modifier = Modifier.fillMaxSize()) {
                 Column(modifier = Modifier.align(Alignment.Center)) {
-                    Text(text = "You have 0 points, the correct answer was 0.", textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+                    if (point == 5)
+                        Text(text = "You have $point/5 points", textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+                    else
+                        Text(text = "You have $point/5 points, the correct answer was $answer.", textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
                     Text(text = "Do you want to retry ?", textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                        Button(onClick = { state = QuizState.QUESTION1 }) { Text(text= "retry") }
+                        Button(onClick = {
+                            state = QuizState.QUESTION1
+                            point = 0
+                        }) { Text(text= "retry") }
                         Button(onClick = { state = QuizState.START }) { Text(text = "stop") }
                     }
                 }
             }
         }
         else -> {
-            DisplayRandomEvent(events = events, state = state, newState = {state = it})
+            DisplayRandomEvent(events = events, state = state, newState = {state = it}, point = {point += it}, answer = {answer = it})
         }
     }
 }
@@ -95,18 +107,43 @@ fun StartButton(state: (QuizState) -> Unit) {
 }
 
 @Composable
-fun DisplayRandomEvent(events: List<HistoricalEventAndClaim>, state: QuizState, newState: (QuizState) -> Unit) {
+fun DisplayRandomEvent(events: List<HistoricalEventAndClaim>, state: QuizState, point: (Int) -> Unit, answer: (String) -> Unit, newState: (QuizState) -> Unit) {
     var event1 = events.random()
     var event2 = events.random()
     while (event2 == event1)
         event2 = events.random()
 
-    Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center) {
-        Text(text = extractLabel(event1)!!, modifier = Modifier.clickable(onClick = {
-            newState(QuizState.changeState(state))
-        }))
-        Text(text = extractLabel(event2)!!, modifier = Modifier.clickable(onClick = {
-            newState(QuizState.changeState(state))
-        }))
+    val date1 = extractDatesFromClaims(event1.claims).first
+    val date2 = extractDatesFromClaims(event2.claims).first
+    val firstEvent = extractLabel(event1)!!
+    val secondEvent = extractLabel(event2)!!
+
+    Column(Modifier.fillMaxSize()) {
+        Text(text = "Quelle évènement est le plus vieux ?", modifier = Modifier.fillMaxWidth().weight(1f/5f, true), textAlign = TextAlign.Center)
+        Row(modifier = Modifier.fillMaxWidth().weight(4f/5f, true), horizontalArrangement = Arrangement.Center) {
+            Box(Modifier.weight(1F/2F, true).background(color = Color.White, shape = RoundedCornerShape(10.dp))) {
+                Text(text = firstEvent, color = Color.Black, textAlign = TextAlign.Center, modifier = Modifier.clickable(onClick = {
+                    if ( true ) {
+                        newState(QuizState.changeState(state))
+                        point(1)
+                    } else {
+                        answer(secondEvent)
+                        newState(QuizState.END)
+                    }
+                }))
+            }
+            Box(Modifier.weight(1F/2F, true).background(color = Color.White, shape = RoundedCornerShape(10.dp))) {
+                Text(text = secondEvent, color = Color.Black, textAlign = TextAlign.Center, modifier = Modifier.clickable(onClick = {
+                    if ( false ) {
+                        newState(QuizState.changeState(state))
+                        point(1)
+                    } else {
+                        answer(firstEvent)
+                        newState(QuizState.END)
+                    }
+                }))
+            }
+        }
     }
+
 }
