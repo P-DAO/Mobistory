@@ -1,5 +1,7 @@
 package fr.uge.mobistory.affichage
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -24,6 +26,7 @@ import fr.uge.mobistory.database.EventDatabase
 import fr.uge.mobistory.database.HistoricalEventAndClaim
 import fr.uge.mobistory.utils.*
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun displayEvent(event: HistoricalEventAndClaim) {
     val context = LocalContext.current
@@ -52,45 +55,54 @@ fun displayEvent(event: HistoricalEventAndClaim) {
                     color = Color.Black,
 
                     )
-                Text(
-                    text = "Description:\n ${extractDescription(event)}",
-                    color = Color.Black,
-                    fontSize = 15.sp
-                )
-                Text(
-                    text = "Popularity: ${event.historicalEvent.popularity.fr}",
-                    fontSize = 15.sp,
-                    color = Color.Black,
+                if (extractDescription(event) != null) {
+                    Text(
+                        text = "Description:\n ${extractDescription(event)}",
+                        color = Color.Black,
+                        fontSize = 15.sp
                     )
-                // TODO créer une condition si date n'existe pas
+                }
+                if (event.historicalEvent.popularity.fr != -1) {
+                    Text(
+                        text = "Popularité: ${event.historicalEvent.popularity.fr}",
+                        fontSize = 15.sp,
+                        color = Color.Black,
+                    )
+                }
                 Text(
                     text = "Date : ${extractDatesFromClaims(event.claims)}",
                     fontSize = 15.sp,
                     color = Color.Black,
-                    )
-                // TODO créer une condition si geo n'existe pas
+                )
                 val (latitude, longitude) = extractGeoLatitudeLongiture(extractGeo(event.claims))
-                Text(
-                    text = "Coordinate :\n Latitude: ${latitude}\n Longitude: ${longitude}",
-                    fontSize = 15.sp,
-                    color = Color.Black,
+                if (latitude != null && longitude != null) {
+                    Text(
+                        text = "Coordinate :\n Latitude: ${latitude}\n Longitude: ${longitude}",
+                        fontSize = 15.sp,
+                        color = Color.Black,
                     )
+                }
             }
             Column(
                 modifier = Modifier.padding(8.dp)
             ) {
                 var isFavorite by remember { mutableStateOf(event.historicalEvent.isFavorite) }
-                val iconTint = if(isFavorite) Color.Yellow else Color.Gray
+                val iconTint = if (isFavorite) Color.Yellow else Color.Gray
 
                 Icon(
                     imageVector = Icons.Default.Star,
                     contentDescription = "Favori",
                     tint = iconTint,
-                    modifier = Modifier.size(24.dp).clickable {
-                        isFavorite = !isFavorite
-                        event.historicalEvent.isFavorite = !event.historicalEvent.isFavorite
-                        EventDatabase.getInstance(context).historicalEventDao().updateEvent(event.historicalEvent)
-                    }
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable {
+                            isFavorite = !isFavorite
+                            event.historicalEvent.isFavorite = !event.historicalEvent.isFavorite
+                            EventDatabase
+                                .getInstance(context)
+                                .historicalEventDao()
+                                .updateEvent(event.historicalEvent)
+                        }
                 )
             }
         }

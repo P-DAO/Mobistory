@@ -2,6 +2,7 @@ package fr.uge.mobistory.utils
 
 import fr.uge.mobistory.database.HistoricalEventAndClaim
 import fr.uge.mobistory.historicalEvent.claim.ClaimEntity
+import java.util.*
 
 /**
  * extraction du label en français sinon en anglais
@@ -11,9 +12,9 @@ fun extractLabel(event: HistoricalEventAndClaim): String?{
     var frLabel = extractLabelFrFromLabel(event)
     var enLabel = extractLabelEnFromLabel(event)
     if(frLabel == null){
-        return enLabel
+        return enLabel?.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
     }
-    return frLabel
+    return frLabel?.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
 }
 
 fun extractLabelFrFromLabel(event: HistoricalEventAndClaim): String?{
@@ -38,9 +39,9 @@ fun extractDescription(event: HistoricalEventAndClaim): String?{
     var frLabel = extractDescriptionFrFromDescription(event)
     var enLabel = extractDescriptionEnFromDescription(event)
     if(frLabel == null){
-        return enLabel
+        return enLabel?.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
     }
-    return frLabel
+    return frLabel?.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
 }
 
 fun extractDescriptionFrFromDescription(event: HistoricalEventAndClaim): String? {
