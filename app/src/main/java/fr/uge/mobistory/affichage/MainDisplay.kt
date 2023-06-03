@@ -1,6 +1,9 @@
 package fr.uge.mobistory.affichage
 
 import android.annotation.SuppressLint
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -56,6 +59,7 @@ import fr.uge.mobistory.database.HistoricalEventAndClaim
 import fr.uge.mobistory.menu.DropDownMenu
 import fr.uge.mobistory.menu.EventList
 import fr.uge.mobistory.menu.SearchMenuState
+import fr.uge.mobistory.quiz.Quiz
 import fr.uge.mobistory.tri.SortType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -66,10 +70,12 @@ enum class DisplayState {
     EVENT,
     EVENTS,
     TIMELINE,
+    QUIZ
 }
 
 data class DrawerMenuItem(val icon: ImageVector, val label: String)
 
+@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MainDisplayer(eventRepository: EventRepository) {
@@ -87,6 +93,8 @@ fun MainDisplayer(eventRepository: EventRepository) {
     LaunchedEffect(Unit) {
         events = eventRepository.getHistoricalEventWithClaimsAll()
     }
+
+
 
     val listMenu = listOf(
         DrawerMenuItem(icon = Icons.Rounded.Home, label = "Home"),
@@ -144,6 +152,7 @@ fun MainDisplayer(eventRepository: EventRepository) {
             }
             DisplayState.HOME -> { Text("évènement du jour a faire") }
             DisplayState.TIMELINE -> { Text("frise chronologique a faire")}
+            DisplayState.QUIZ -> { Quiz(events = events) }
         }
     }
 }
@@ -168,14 +177,9 @@ fun DisplayDrawer(listMenu: List<DrawerMenuItem>, state: (DisplayState) -> Unit,
                 .clickable {
                     coroutineScope.launch { scaffoldState.drawerState.close() }
                     when (item.label) {
-                        "Events" -> {
-                            state(DisplayState.EVENTS)
-                        }
-
-                        "Event" -> {
-                            state(DisplayState.EVENT)
-                        }
-
+                        "Events" -> { state(DisplayState.EVENTS) }
+                        "Event" -> { state(DisplayState.EVENT) }
+                        "Quiz" -> { state(DisplayState.QUIZ) }
                         else -> {
                             state(DisplayState.HOME)
                         }
