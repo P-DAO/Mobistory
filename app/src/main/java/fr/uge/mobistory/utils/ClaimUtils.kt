@@ -58,24 +58,25 @@ fun extractDateFromValue(value: String): String? {
     var date: String? = null;
     if (value.startsWith(datePrefix)) {
         val dateValue = value.substringAfter(datePrefix)
-        val component = dateValue.split("-").map { it.removePrefix("-") }
+        val component = dateValue.split("-")
 
+        if (component.size == 4) {
+            val year = component[1]
+            return "-${year} av. J-C"
+        }
         if (component.size == 3) {
-            val year = component[0].toInt()
-            val month = component[1].toInt()
-            val day = component[2].toInt()
-            Log.d("DATE", "component ${component}")
+            val year = component[0]
+            val month = component[1]
+            val day = component[2]
 
-            if (year < 0) {
-                return "${year} av. J-C"
-            }
-            if (month != 0 && day != 0) {
-                val date = LocalDate.of(year, month, day)
+            if (month != "0" && day != "0") {
+                val date = LocalDate.of(year.toInt(), month.toInt(), day.toInt())
                 val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
                 return date.format(formatter)
             }
+
             date = component[0]
-        } else if(component[1].toInt() == 0 && component[2].toInt() == 0){
+        } else if(component.size == 1){
             return component[0]
         }
     }
