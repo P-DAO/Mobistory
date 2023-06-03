@@ -9,20 +9,14 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import fr.uge.mobistory.AppBar
-import fr.uge.mobistory.ImportEventTxt
+import fr.uge.mobistory.utils.ImportEventTxt
 import fr.uge.mobistory.R
 import fr.uge.mobistory.affichage.*
 import fr.uge.mobistory.database.EventRepository
 import fr.uge.mobistory.database.HistoricalEventAndClaim
-import fr.uge.mobistory.menu.DrawerBody
-import fr.uge.mobistory.menu.DrawerHeader
-import fr.uge.mobistory.menu.MenuItem
-import fr.uge.mobistory.tri.SortType
 import fr.uge.mobistory.ui.theme.MobistoryTheme
 import kotlinx.coroutines.launch
 
@@ -49,10 +43,8 @@ class MainActivity : ComponentActivity() {
 
                     // Lecture du fichier de ressource brute
                     val fileInputStream = resources.openRawResource(R.raw.events)
-                    val fileContent: List<String> = fileInputStream.bufferedReader().readLines()
-//                        .useLines { lineSeq ->
-//                        lineSeq.forEach {  }
-//                    } //TODO séquence de line
+                    val fileContent: List<String> = fileInputStream.bufferedReader().useLines { lineSeq ->
+                        lineSeq.toList() }
 
                     viewModel.importEventTxtInDataBase(fileContent, eventRepository)
 
