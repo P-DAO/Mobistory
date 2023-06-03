@@ -1,11 +1,9 @@
-package fr.uge.mobistory
+package fr.uge.mobistory.utils
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import fr.uge.mobistory.database.EventDatabase
 import fr.uge.mobistory.database.EventRepository
 import fr.uge.mobistory.historicalEvent.HistoricalEvent
 import fr.uge.mobistory.historicalEvent.HistoricalEventEntity
@@ -19,7 +17,7 @@ class ImportEventTxt : ViewModel(){
     @RequiresApi(Build.VERSION_CODES.N)
     fun importEventTxtInDataBase(fileContent: List<String>, eventRepository: EventRepository){
         viewModelScope.launch(Dispatchers.IO) {
-            val listHistoricalEvent: List<HistoricalEvent> = fileContent.stream()
+            val listHistoricalEvent: List<HistoricalEvent> = fileContent.asSequence()
                 .map { line ->
                     Json { ignoreUnknownKeys = true }.decodeFromString<HistoricalEvent>(
                         line
@@ -29,7 +27,7 @@ class ImportEventTxt : ViewModel(){
                 .toList()
 
             // Désérialisation des données JSON en objets HistoricalEvent
-            val historicalEventEntities: List<HistoricalEventEntity> = listHistoricalEvent.stream()
+            val historicalEventEntities: List<HistoricalEventEntity> = listHistoricalEvent.asSequence()
                 .map { event -> event.toHistoricalEventEntity() }
 //                            .peek { event -> Log.d("Event_ENTITY", event.toString()) }
                 .toList()
