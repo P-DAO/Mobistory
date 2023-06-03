@@ -12,7 +12,9 @@ fun extractDatesFromClaims(claims: List<ClaimEntity>): String? {
     val datePeriod = extractDatesPeriodFromClaims(claims);
     return if (datePeriod.first != null && datePeriod.second == null) {
         " ${datePeriod.first}"
-    } else if (datePeriod.first != null && datePeriod.second != null) {
+    } else if(datePeriod.first != null && datePeriod.first == datePeriod.second) {
+        " ${datePeriod.first}"
+    }else if (datePeriod.first != null && datePeriod.second != null) {
         " de ${datePeriod.first} à ${datePeriod.second}"
     } else {
         extractDatesPunctualFromClaims(claims)
