@@ -13,7 +13,6 @@ data class HistoricalEventEntity(
     val aliases: String?,
 //    val language: String?,
     val description: String,
-    var isFavorite: Boolean = false,
     @Embedded
     val popularity: Popularity
     // TODO parser pour obtenir la date d'un event par rapport a la description

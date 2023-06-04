@@ -1,18 +1,20 @@
 package fr.uge.mobistory.affichage
 
+import android.annotation.SuppressLint
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -21,15 +23,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import fr.uge.mobistory.dao.HistoricalEventsDao
 import fr.uge.mobistory.database.EventDatabase
 import fr.uge.mobistory.database.HistoricalEventAndClaim
 import fr.uge.mobistory.utils.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun displayEvent(event: HistoricalEventAndClaim) {
-    val context = LocalContext.current
+fun displayEvent(event: HistoricalEventAndClaim, favoriteEvents: MutableList<HistoricalEventAndClaim>) {
+
     Card(
         modifier = Modifier
             .padding(horizontal = 8.dp, vertical = 8.dp)
@@ -39,7 +43,8 @@ fun displayEvent(event: HistoricalEventAndClaim) {
         shape = RoundedCornerShape(corner = CornerSize(10.dp))
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+
         ) {
 //            Image(painter = , contentDescription = )
             Column(
@@ -86,22 +91,19 @@ fun displayEvent(event: HistoricalEventAndClaim) {
             Column(
                 modifier = Modifier.padding(8.dp)
             ) {
-                var isFavorite by remember { mutableStateOf(event.historicalEvent.isFavorite) }
-                val iconTint = if (isFavorite) Color.Yellow else Color.Gray
 
                 Icon(
-                    imageVector = Icons.Default.Star,
-                    contentDescription = "Favori",
-                    tint = iconTint,
+                    imageVector = if (event in favoriteEvents) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                    contentDescription = if (event in favoriteEvents) "Favorite" else "Unfavorite",
+                    tint = Color.Red,
                     modifier = Modifier
                         .size(24.dp)
                         .clickable {
-                            isFavorite = !isFavorite
-                            event.historicalEvent.isFavorite = !event.historicalEvent.isFavorite
-                            EventDatabase
-                                .getInstance(context)
-                                .historicalEventDao()
-                                .updateEvent(event.historicalEvent)
+                            if (event in favoriteEvents) {
+                                favoriteEvents.remove(event)
+                            } else {
+                                favoriteEvents.add(event)
+                            }
                         }
                 )
             }
