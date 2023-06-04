@@ -26,6 +26,8 @@ class MainActivity : ComponentActivity() {
 
     private val eventsState = mutableStateOf(emptyList<HistoricalEventAndClaim>())
 
+    private val favoriteEvents = mutableStateListOf<HistoricalEventAndClaim>()
+
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("CoroutineCreationDuringComposition", "UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,7 +56,7 @@ class MainActivity : ComponentActivity() {
                         val allEvents = eventRepository.getHistoricalEventWithClaimsAll()
                         eventsState.value = allEvents
                     }
-                    MainDisplayer(eventRepository = eventRepository)
+                    MainDisplayer(eventRepository = eventRepository, favoriteEvents)
 //                    displayAllEvents(eventRepository, sortType, showFavoritesOnly)
 
                 }
