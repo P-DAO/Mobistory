@@ -201,7 +201,7 @@ fun DisplayRandomEvent(events: List<HistoricalEventAndClaim>, state: QuizState, 
         Column(Modifier.fillMaxSize()) {
             Box(Modifier.fillMaxWidth().weight(2f / 5f, true), contentAlignment = Alignment.Center) {
                 Text(
-                    text = "Quelle évènement est le plus vieux ?",
+                    text = "what is the oldest event ?",
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
