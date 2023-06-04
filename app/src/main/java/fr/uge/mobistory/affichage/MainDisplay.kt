@@ -163,7 +163,7 @@ fun MainDisplayer(eventRepository: EventRepository, favoriteEvents: MutableList<
                     }
                     SearchMenuState.CLOSE -> {            
                         val newEvent =
-                            events.first { events -> event == events.historicalEvent.label }
+                            events.first { events -> event == extractLabel(events) }
                         displayEvent(event = newEvent, favoriteEvents)
                     }
                 }
