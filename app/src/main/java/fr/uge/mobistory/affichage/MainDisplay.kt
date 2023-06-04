@@ -52,7 +52,10 @@ import fr.uge.mobistory.database.HistoricalEventAndClaim
 import fr.uge.mobistory.menu.DropDownMenu
 import fr.uge.mobistory.menu.EventList
 import fr.uge.mobistory.menu.SearchMenuState
+import fr.uge.mobistory.quiz.Quiz
+import fr.uge.mobistory.timeline.TimelineDisplayer
 import fr.uge.mobistory.tri.SortType
+import fr.uge.mobistory.utils.extractLabel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -61,6 +64,7 @@ enum class DisplayState {
     EVENT,
     EVENTS,
     TIMELINE,
+    QUIZ
     FAVORITE
 }
 
@@ -157,7 +161,7 @@ fun MainDisplayer(eventRepository: EventRepository, favoriteEvents: MutableList<
                             event = { newEvent -> event = newEvent },
                             searchState = { searchState = it })
                     }
-                    SearchMenuState.CLOSE -> {
+                    SearchMenuState.CLOSE -> {            
                         val newEvent =
                             events.first { events -> event == events.historicalEvent.label }
                         displayEvent(event = newEvent, favoriteEvents)
@@ -170,9 +174,8 @@ fun MainDisplayer(eventRepository: EventRepository, favoriteEvents: MutableList<
             DisplayState.HOME -> {
                 Text("évènement du jour a faire")
             }
-            DisplayState.TIMELINE -> {
-                Text("frise chronologique a faire")
-            }
+            DisplayState.TIMELINE -> { TimelineDisplayer(events = events) }
+            DisplayState.QUIZ -> { Quiz(events = events) }
         }
     }
 }
@@ -223,6 +226,14 @@ fun DisplayDrawer(
                         }
                         "Favoris" -> {
                             state(DisplayState.FAVORITE)
+                        }
+
+                        "Quiz" -> {
+                            state(DisplayState.QUIZ)
+                        }
+
+                        "Timeline" -> {
+                            state(DisplayState.TIMELINE)
                         }
 
                         else -> {
