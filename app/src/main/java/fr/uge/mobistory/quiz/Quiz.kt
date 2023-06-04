@@ -109,7 +109,7 @@ private fun minOfDate(event1: HistoricalEventAndClaim, event2: HistoricalEventAn
     val firstDate = extractDateFromString(date1)
     val secondDate = extractDateFromString(date2)
 
-    return firstDate < secondDate
+    return firstDate <= secondDate
 }
 
 @Composable

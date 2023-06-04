@@ -60,6 +60,7 @@ import fr.uge.mobistory.menu.DropDownMenu
 import fr.uge.mobistory.menu.EventList
 import fr.uge.mobistory.menu.SearchMenuState
 import fr.uge.mobistory.quiz.Quiz
+import fr.uge.mobistory.timeline.TimelineDisplayer
 import fr.uge.mobistory.tri.SortType
 import fr.uge.mobistory.utils.extractLabel
 import kotlinx.coroutines.CoroutineScope
@@ -150,7 +151,7 @@ fun MainDisplayer(eventRepository: EventRepository) {
                 }
             }
             DisplayState.HOME -> { Text("évènement du jour a faire") }
-            DisplayState.TIMELINE -> { Text("frise chronologique a faire")}
+            DisplayState.TIMELINE -> { TimelineDisplayer(events = events) }
             DisplayState.QUIZ -> { Quiz(events = events) }
         }
     }
@@ -176,9 +177,22 @@ fun DisplayDrawer(listMenu: List<DrawerMenuItem>, state: (DisplayState) -> Unit,
                 .clickable {
                     coroutineScope.launch { scaffoldState.drawerState.close() }
                     when (item.label) {
-                        "Events" -> { state(DisplayState.EVENTS) }
-                        "Event" -> { state(DisplayState.EVENT) }
-                        "Quiz" -> { state(DisplayState.QUIZ) }
+                        "Events" -> {
+                            state(DisplayState.EVENTS)
+                        }
+
+                        "Event" -> {
+                            state(DisplayState.EVENT)
+                        }
+
+                        "Quiz" -> {
+                            state(DisplayState.QUIZ)
+                        }
+
+                        "Timeline" -> {
+                            state(DisplayState.TIMELINE)
+                        }
+
                         else -> {
                             state(DisplayState.HOME)
                         }
