@@ -28,6 +28,4 @@ interface HistoricalEventsDao {
     @Query("SELECT * FROM historical_event")
     fun getHistoricalEventWithClaimsAll(): List<HistoricalEventAndClaim>
 
-
-
 }

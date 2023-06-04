@@ -38,4 +38,5 @@ class EventRepository(applicationContext: Context) {
     fun getAll(): List<HistoricalEventEntity>{
         return historicalEventsDao.getAll()
     }
+
 }
