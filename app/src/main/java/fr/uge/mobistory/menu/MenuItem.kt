@@ -8,5 +8,4 @@ data class MenuItem(
     val title: String,
     val contentDescription: String,
     val icon: ImageVector,
-//    val content: (@Composable () -> Unit)? = null
 )

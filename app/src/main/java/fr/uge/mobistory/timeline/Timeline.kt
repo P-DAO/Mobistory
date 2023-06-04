@@ -1,7 +1,6 @@
 package fr.uge.mobistory.timeline
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import fr.uge.mobistory.database.HistoricalEventAndClaim
@@ -134,13 +132,4 @@ fun TimelineDisplayer(events: List<HistoricalEventAndClaim>) {
     }
 
 
-//    LazyColumn(modifier = Modifier.fillMaxSize()) {
-//        items(treatedEvents) {event ->
-//            LazyRow(modifier = Modifier.fillMaxWidth()) {
-//                items() {timeEvent ->
-//
-//                }
-//            }
-//        }
-//    }
 }

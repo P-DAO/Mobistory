@@ -14,9 +14,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import fr.uge.mobistory.utils.ImportEventTxt
 import fr.uge.mobistory.R
-import fr.uge.mobistory.affichage.*
+import fr.uge.mobistory.affichageEvent.*
 import fr.uge.mobistory.database.EventRepository
 import fr.uge.mobistory.database.HistoricalEventAndClaim
+import fr.uge.mobistory.menu.MainDisplayer
 import fr.uge.mobistory.ui.theme.MobistoryTheme
 import kotlinx.coroutines.launch
 

@@ -1,8 +1,6 @@
-package fr.uge.mobistory.affichage
+package fr.uge.mobistory.affichageEvent
 
-import android.app.usage.EventStats
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,14 +9,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fr.uge.mobistory.database.EventRepository
 import fr.uge.mobistory.database.HistoricalEventAndClaim
 import fr.uge.mobistory.tri.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable

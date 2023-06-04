@@ -1,34 +1,23 @@
-package fr.uge.mobistory.affichage
+package fr.uge.mobistory.affichageEvent
 
-import android.annotation.SuppressLint
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import fr.uge.mobistory.database.EventDatabase
 import fr.uge.mobistory.database.HistoricalEventAndClaim
 import fr.uge.mobistory.utils.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -46,7 +35,6 @@ fun displayEvent(event: HistoricalEventAndClaim, favoriteEvents: MutableList<His
             modifier = Modifier.fillMaxWidth(),
 
         ) {
-//            Image(painter = , contentDescription = )
             Column(
                 modifier = Modifier
                     .weight(1f)

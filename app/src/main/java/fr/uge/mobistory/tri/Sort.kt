@@ -1,15 +1,10 @@
 package fr.uge.mobistory.tri
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import fr.uge.mobistory.database.HistoricalEventAndClaim
 import fr.uge.mobistory.historicalEvent.claim.ClaimEntity
 import fr.uge.mobistory.utils.*
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.Comparator
 
 /**
  * Tri par date

@@ -1,8 +1,6 @@
 package fr.uge.mobistory.quiz
 
 import android.os.Build
-import android.os.SystemClock
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,27 +16,21 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.traceEventEnd
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
-import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import fr.uge.mobistory.database.HistoricalEventAndClaim
-import fr.uge.mobistory.historicalEvent.HistoricalEventEntity
 import fr.uge.mobistory.utils.extractDatesFromClaims
 import fr.uge.mobistory.utils.extractLabel
-import kotlinx.coroutines.delay
 import java.time.LocalDate
-import java.util.Date
 
 enum class QuizState {
     START,

@@ -1,6 +1,5 @@
 package fr.uge.mobistory.menu
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentSize
@@ -8,14 +7,11 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.unit.sp
 import fr.uge.mobistory.R
 import fr.uge.mobistory.tri.SortType
-import fr.uge.mobistory.tri.sortByDate
 
 @Composable
 fun DropDownMenu(
@@ -25,10 +21,6 @@ fun DropDownMenu(
     var selectedSortType by remember { mutableStateOf(SortType.DATE) } // Option de tri sélectionnée
 
     val context = LocalContext.current
-//    Text(text = "Mobistory",
-//        fontSize = 20.sp,
-//        color = Color.White,
-//    )
     Box(
         Modifier
             .fillMaxWidth()

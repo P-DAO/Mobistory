@@ -1,7 +1,5 @@
 package fr.uge.mobistory.historicalEvent
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.room.*
 import fr.uge.mobistory.historicalEvent.popularity.Popularity
 

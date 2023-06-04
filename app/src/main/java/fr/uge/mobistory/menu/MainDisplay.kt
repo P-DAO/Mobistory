@@ -1,8 +1,7 @@
-package fr.uge.mobistory.affichage
+package fr.uge.mobistory.menu
 
 import android.annotation.SuppressLint
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -29,8 +28,6 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.*
@@ -47,11 +44,10 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import fr.uge.mobistory.R
+import fr.uge.mobistory.affichageEvent.displayAllEvents
+import fr.uge.mobistory.affichageEvent.displayEvent
 import fr.uge.mobistory.database.EventRepository
 import fr.uge.mobistory.database.HistoricalEventAndClaim
-import fr.uge.mobistory.menu.DropDownMenu
-import fr.uge.mobistory.menu.EventList
-import fr.uge.mobistory.menu.SearchMenuState
 import fr.uge.mobistory.quiz.Quiz
 import fr.uge.mobistory.timeline.TimelineDisplayer
 import fr.uge.mobistory.tri.SortType

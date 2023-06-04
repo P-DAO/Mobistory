@@ -1,6 +1,5 @@
 package fr.uge.mobistory.historicalEvent.claim
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 

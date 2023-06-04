@@ -1,7 +1,6 @@
 package fr.uge.mobistory.historicalEvent.claim
 
 import fr.uge.mobistory.historicalEvent.HistoricalEvent
-import fr.uge.mobistory.historicalEvent.claim.ClaimEntity
 import kotlinx.serialization.Serializable
 
 @Serializable

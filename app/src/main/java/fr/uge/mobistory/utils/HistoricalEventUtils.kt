@@ -1,7 +1,6 @@
 package fr.uge.mobistory.utils
 
 import fr.uge.mobistory.database.HistoricalEventAndClaim
-import fr.uge.mobistory.historicalEvent.claim.ClaimEntity
 import java.util.*
 
 /**
