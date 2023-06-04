@@ -2,6 +2,7 @@ package fr.uge.mobistory.affichage
 
 import android.app.usage.EventStats
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fr.uge.mobistory.database.EventRepository
@@ -23,10 +25,12 @@ import kotlinx.coroutines.launch
 fun displayAllEvents(
     eventRepository: EventRepository,
     sortType: SortType,
-    showFavoritesOnly: Boolean
+    showFavoritesOnly: Boolean,
+    favoriteEvents: MutableList<HistoricalEventAndClaim>
 ) {
     val lazyListState = rememberLazyListState()
     var events: List<HistoricalEventAndClaim> by remember { mutableStateOf(listOf()) }
+
 
     LaunchedEffect(Unit) {
         events = eventRepository.getHistoricalEventWithClaimsAll()
@@ -38,22 +42,20 @@ fun displayAllEvents(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        val sortedEvents = when (sortType) {
-            SortType.DATE -> sortByDate(events)
-            SortType.LABEL -> sortByLabel(events)
-            SortType.LOCATION -> sortByLocation(events)
-            SortType.POPULARITY -> sortByPopularity(events)
-        }
-        events = sortedEvents
-
         val filteredEvents = if (showFavoritesOnly) {
-            sortedEvents.filter { it.historicalEvent.isFavorite }
+            favoriteEvents
         } else {
-            sortedEvents
+            events
         }
+        val sortedEvents = when (sortType) {
+                SortType.DATE -> sortByDate(filteredEvents)
+                SortType.LABEL -> sortByLabel(filteredEvents)
+                SortType.LOCATION -> sortByLocation(filteredEvents)
+                SortType.POPULARITY -> sortByPopularity(filteredEvents)
+            }
 
-        items(events) { event ->
-            displayEvent(event = event)
+        items(sortedEvents) { event ->
+            displayEvent(event = event, favoriteEvents)
         }
     }
 }

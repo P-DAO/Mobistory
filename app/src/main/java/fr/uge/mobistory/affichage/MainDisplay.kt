@@ -1,6 +1,9 @@
 package fr.uge.mobistory.affichage
 
 import android.annotation.SuppressLint
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,8 +18,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
@@ -28,17 +29,12 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -59,20 +55,21 @@ import fr.uge.mobistory.menu.SearchMenuState
 import fr.uge.mobistory.tri.SortType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 enum class DisplayState {
     HOME,
     EVENT,
     EVENTS,
     TIMELINE,
+    FAVORITE
 }
 
 data class DrawerMenuItem(val icon: ImageVector, val label: String)
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@RequiresApi(Build.VERSION_CODES.O)
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnrememberedMutableState")
 @Composable
-fun MainDisplayer(eventRepository: EventRepository) {
+fun MainDisplayer(eventRepository: EventRepository, favoriteEvents: MutableList<HistoricalEventAndClaim>) {
 
     var displayState by rememberSaveable { mutableStateOf(DisplayState.HOME) }
     val textState = remember { mutableStateOf(TextFieldValue("")) }
@@ -80,6 +77,8 @@ fun MainDisplayer(eventRepository: EventRepository) {
     var events: List<HistoricalEventAndClaim> by remember { mutableStateOf(listOf()) }
     var event by rememberSaveable { mutableStateOf("") }
     var searchState by rememberSaveable { mutableStateOf(SearchMenuState.OPEN) }
+
+    var showFavoritesOnly by remember { mutableStateOf(false) }
 
     val coroutineScope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
@@ -92,9 +91,15 @@ fun MainDisplayer(eventRepository: EventRepository) {
         DrawerMenuItem(icon = Icons.Rounded.Home, label = "Home"),
         DrawerMenuItem(icon = Icons.Rounded.List, label = "Events"),//TODO on a perdu le titre
         DrawerMenuItem(icon = Icons.Rounded.Search, label = "Event"),
-        DrawerMenuItem(icon = Icons.Rounded.Star, label = "Favoris"),
-        DrawerMenuItem(icon = ImageVector.vectorResource(id = R.drawable.baseline_question_answer_24), label = "Quiz"),
-        DrawerMenuItem(icon = ImageVector.vectorResource(id = R.drawable.frise_chrono_icon_24), label = "Timeline")
+        DrawerMenuItem(icon = Icons.Rounded.FavoriteBorder, label = "Favoris"),
+        DrawerMenuItem(
+            icon = ImageVector.vectorResource(id = R.drawable.baseline_question_answer_24),
+            label = "Quiz"
+        ),
+        DrawerMenuItem(
+            icon = ImageVector.vectorResource(id = R.drawable.frise_chrono_icon_24),
+            label = "Timeline"
+        )
     )
 
     Scaffold(
@@ -102,20 +107,30 @@ fun MainDisplayer(eventRepository: EventRepository) {
         topBar = {
             TopAppBar(
                 title = { Text(text = "Mobistory") },
-                navigationIcon = { IconButton(onClick = {
-                    coroutineScope.launch { scaffoldState.drawerState.open() }
-                }) {
-                    Icon(imageVector = Icons.Rounded.Menu, contentDescription = "Drawer Icon")
-                } },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        coroutineScope.launch { scaffoldState.drawerState.open() }
+                    }) {
+                        Icon(imageVector = Icons.Rounded.Menu, contentDescription = "Drawer Icon")
+                    }
+                },
                 actions = {
                     when (displayState) {
                         DisplayState.EVENT -> {
                             Column {
-                                SearchView(state = textState, searchState = { searchState = it }) }
+                                SearchView(state = textState, searchState = { searchState = it })
                             }
-                        DisplayState.EVENTS -> { DropDownMenu { newSortType -> sortType = newSortType } }
+                        }
+                        DisplayState.EVENTS -> {
+                            DropDownMenu { newSortType -> sortType = newSortType }
+                        }
+                        DisplayState.FAVORITE -> {
+                            DropDownMenu { newSortType -> sortType = newSortType }
+                            showFavoritesOnly = true
+                        }
                         else -> {}
                     }
+
                 }
             )
         },
@@ -130,34 +145,65 @@ fun MainDisplayer(eventRepository: EventRepository) {
         drawerGesturesEnabled = true,
     ) {
         when (displayState) {
-            DisplayState.EVENTS -> { displayAllEvents(eventRepository, sortType, true) }
+            DisplayState.EVENTS -> {
+                displayAllEvents(eventRepository, sortType, false, favoriteEvents)
+            }
             DisplayState.EVENT -> {
                 when (searchState) {
                     SearchMenuState.OPEN -> {
-                        EventList(listEvent = events, state = textState, event = {newEvent -> event = newEvent}, searchState = {searchState = it})
+                        EventList(
+                            listEvent = events,
+                            state = textState,
+                            event = { newEvent -> event = newEvent },
+                            searchState = { searchState = it })
                     }
                     SearchMenuState.CLOSE -> {
-                        val newEvent = events.first { events -> event == events.historicalEvent.label }
-                        displayEvent(event = newEvent)
+                        val newEvent =
+                            events.first { events -> event == events.historicalEvent.label }
+                        displayEvent(event = newEvent, favoriteEvents)
                     }
                 }
             }
-            DisplayState.HOME -> { Text("évènement du jour a faire") }
-            DisplayState.TIMELINE -> { Text("frise chronologique a faire")}
+            DisplayState.FAVORITE -> {
+                displayAllEvents(eventRepository, sortType, true, favoriteEvents)
+            }
+            DisplayState.HOME -> {
+                Text("évènement du jour a faire")
+            }
+            DisplayState.TIMELINE -> {
+                Text("frise chronologique a faire")
+            }
         }
     }
 }
 
 @Composable
-fun DisplayDrawer(listMenu: List<DrawerMenuItem>, state: (DisplayState) -> Unit, coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(modifier = Modifier
-            .size(126.dp)
-            .clip(CircleShape), contentAlignment = Alignment.Center) {
-            Image(modifier = Modifier.matchParentSize(), painter = painterResource(id = R.drawable.ic_launcher_background), contentDescription = "")
-            Image(modifier = Modifier.scale(1.4f), painter = painterResource(id = R.drawable.ic_launcher_foreground), contentDescription = "",)
+fun DisplayDrawer(
+    listMenu: List<DrawerMenuItem>,
+    state: (DisplayState) -> Unit,
+    coroutineScope: CoroutineScope,
+    scaffoldState: ScaffoldState
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(
+            modifier = Modifier
+                .size(126.dp)
+                .clip(CircleShape), contentAlignment = Alignment.Center
+        ) {
+            Image(
+                modifier = Modifier.matchParentSize(),
+                painter = painterResource(id = R.drawable.ic_launcher_background),
+                contentDescription = ""
+            )
+            Image(
+                modifier = Modifier.scale(1.4f),
+                painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                contentDescription = "",
+            )
         }
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -175,15 +221,20 @@ fun DisplayDrawer(listMenu: List<DrawerMenuItem>, state: (DisplayState) -> Unit,
                         "Event" -> {
                             state(DisplayState.EVENT)
                         }
+                        "Favoris" -> {
+                            state(DisplayState.FAVORITE)
+                        }
 
                         else -> {
                             state(DisplayState.HOME)
                         }
                     }
                 }) {
-                Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start)
+                    horizontalArrangement = Arrangement.Start
+                )
                 {
                     Icon(
                         imageVector = item.icon,
@@ -207,11 +258,21 @@ fun SearchView(state: MutableState<TextFieldValue>, searchState: (SearchMenuStat
             value = state.value,
             onValueChange = { value ->
                 state.value = value
-                searchState(SearchMenuState.OPEN) },
-            leadingIcon = { Icon(imageVector = Icons.Rounded.Search, contentDescription = "searchEvent") },
+                searchState(SearchMenuState.OPEN)
+            },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Rounded.Search,
+                    contentDescription = "searchEvent"
+                )
+            },
             singleLine = true,
             shape = RectangleShape,
-            colors = TextFieldDefaults.textFieldColors( leadingIconColor = Color.White, textColor = Color.White, cursorColor = Color.White),
+            colors = TextFieldDefaults.textFieldColors(
+                leadingIconColor = Color.White,
+                textColor = Color.White,
+                cursorColor = Color.White
+            ),
         )
     }
 }
