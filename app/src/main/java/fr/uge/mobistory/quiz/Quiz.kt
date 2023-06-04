@@ -67,25 +67,33 @@ private enum class ButtonState {
     OFF
 }
 
-private fun extractDateFromString(date: String, regex1: Regex, regex2: Regex, regex3: Regex, regex4: Regex, regex5: Regex): LocalDate {
+private enum class Expression(val regex: Regex) {
+    EXPR1(Regex("^de [0-9]* à [0-9]*\$")),
+    EXPR2(Regex("^-[0-9]* av. J-C\$")),
+    EXPR3(Regex("^[0-9]*\$")),
+    EXPR4(Regex("^[0-9]*\\/[0-9]*\\/[0-9]*\$")),
+    EXPR5(Regex("^de [0-9]*\\/[0-9]*\\/[0-9]* à [0-9]*\\/[0-9]*\\/[0-9]*\$"))
+}
+
+private fun extractDateFromString(date: String): LocalDate {
     var newDate = ""
-    if (date.matches(regex1)) {
+    if (date.matches(Expression.EXPR1.regex)) {
         newDate = date.removePrefix("de ")
         newDate = newDate.removeSuffix(" à [0-9]*")
         return LocalDate.of(newDate.toInt(), 1, 1)
     }
-    if (date.matches(regex2)) {
+    if (date.matches(Expression.EXPR2.regex)) {
         newDate = date.removeSuffix(" av. J-C")
         return LocalDate.of(newDate.toInt(), 1, 1)
     }
-    if (date.matches(regex3)) {
+    if (date.matches(Expression.EXPR3.regex)) {
         return LocalDate.of(date.toInt(), 1, 1)
     }
-    if (date.matches(regex4)) {
+    if (date.matches(Expression.EXPR4.regex)) {
         var list = date.split("/")
         return LocalDate.of(list[2].toInt(), list[1].toInt(), list[0].toInt())
     }
-    if (date.matches(regex5)) {
+    if (date.matches(Expression.EXPR5.regex)) {
         newDate = date.removePrefix("de ")
         newDate = newDate.removeSuffix(" à [0-9]*\\/[0-9]*\\/[0-9]*")
         var list = newDate.split("/")
@@ -94,12 +102,12 @@ private fun extractDateFromString(date: String, regex1: Regex, regex2: Regex, re
     return LocalDate.of(0, 0, 0)
 }
 
-private fun minOfDate(event1: HistoricalEventAndClaim, event2: HistoricalEventAndClaim, regex1: Regex, regex2: Regex, regex3: Regex, regex4: Regex, regex5: Regex): Boolean {
+private fun minOfDate(event1: HistoricalEventAndClaim, event2: HistoricalEventAndClaim): Boolean {
     val date1 = extractDatesFromClaims(event1.claims)!!
     val date2 = extractDatesFromClaims(event2.claims)!!
 
-    val firstDate = extractDateFromString(date1, regex1, regex2, regex3, regex4, regex5)
-    val secondDate = extractDateFromString(date2, regex1, regex2, regex3, regex4, regex5)
+    val firstDate = extractDateFromString(date1)
+    val secondDate = extractDateFromString(date2)
 
     return firstDate < secondDate
 }
@@ -155,18 +163,12 @@ fun DisplayRandomEvent(events: List<HistoricalEventAndClaim>, state: QuizState, 
     var color1 by remember { mutableStateOf(Color.White) }
     var color2 by remember { mutableStateOf(Color.White) }
 
-    val regex1 = Regex("^de [0-9]* à [0-9]*\$")
-    val regex2 = Regex("^-[0-9]* av. J-C\$")
-    val regex3 = Regex("^[0-9]*\$")
-    val regex4 = Regex("^[0-9]*\\/[0-9]*\\/[0-9]*\$")
-    val regex5 = Regex("^de [0-9]*\\/[0-9]*\\/[0-9]* à [0-9]*\\/[0-9]*\\/[0-9]*\$")
-
     val treatedEvents = events.filter {
-        regex1.matches(extractDatesFromClaims(it.claims)!!) ||
-        regex2.matches(extractDatesFromClaims(it.claims)!!) ||
-        regex3.matches(extractDatesFromClaims(it.claims)!!) ||
-        regex4.matches(extractDatesFromClaims(it.claims)!!) ||
-        regex5.matches(extractDatesFromClaims(it.claims)!!)
+        Expression.EXPR1.regex.matches(extractDatesFromClaims(it.claims)!!) ||
+        Expression.EXPR2.regex.matches(extractDatesFromClaims(it.claims)!!) ||
+        Expression.EXPR3.regex.matches(extractDatesFromClaims(it.claims)!!) ||
+        Expression.EXPR4.regex.matches(extractDatesFromClaims(it.claims)!!) ||
+        Expression.EXPR5.regex.matches(extractDatesFromClaims(it.claims)!!)
     }
 
     var event1 = treatedEvents.random()
@@ -216,16 +218,7 @@ fun DisplayRandomEvent(events: List<HistoricalEventAndClaim>, state: QuizState, 
                             .background(color1, RoundedCornerShape(10.dp))
                             .clickable(onClick = {
                                 buttonState = ButtonState.ON
-                                if (minOfDate(
-                                        event1,
-                                        event2,
-                                        regex1,
-                                        regex2,
-                                        regex3,
-                                        regex4,
-                                        regex5
-                                    )
-                                ) {
+                                if (minOfDate(event1, event2)) {
                                     point(1)
                                     color1 = Color.Green
                                 } else {
@@ -246,16 +239,7 @@ fun DisplayRandomEvent(events: List<HistoricalEventAndClaim>, state: QuizState, 
                             .background(color2, RoundedCornerShape(10.dp))
                             .clickable(onClick = {
                                 buttonState = ButtonState.ON
-                                if (minOfDate(
-                                        event2,
-                                        event1,
-                                        regex1,
-                                        regex2,
-                                        regex3,
-                                        regex4,
-                                        regex5
-                                    )
-                                ) {
+                                if (minOfDate(event2, event1)) {
                                     point(1)
                                     color2 = Color.Green
                                 } else {
