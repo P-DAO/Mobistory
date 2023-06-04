@@ -1,7 +1,9 @@
 package fr.uge.mobistory.quiz
 
+import android.os.Build
 import android.os.SystemClock
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -75,6 +77,7 @@ private enum class Expression(val regex: Regex) {
     EXPR5(Regex("^de [0-9]*\\/[0-9]*\\/[0-9]* à [0-9]*\\/[0-9]*\\/[0-9]*\$"))
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 private fun extractDateFromString(date: String): LocalDate {
     var newDate = ""
     if (date.matches(Expression.EXPR1.regex)) {
@@ -102,6 +105,7 @@ private fun extractDateFromString(date: String): LocalDate {
     return LocalDate.of(0, 0, 0)
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 private fun minOfDate(event1: HistoricalEventAndClaim, event2: HistoricalEventAndClaim): Boolean {
     val date1 = extractDatesFromClaims(event1.claims)!!
     val date2 = extractDatesFromClaims(event2.claims)!!
@@ -112,6 +116,7 @@ private fun minOfDate(event1: HistoricalEventAndClaim, event2: HistoricalEventAn
     return firstDate <= secondDate
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Quiz(events: List<HistoricalEventAndClaim>) {
     var state by rememberSaveable { mutableStateOf(QuizState.START) }
@@ -156,6 +161,7 @@ fun StartButton(state: (QuizState) -> Unit) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DisplayRandomEvent(events: List<HistoricalEventAndClaim>, state: QuizState, point: (Int) -> Unit, answer: (String) -> Unit, newState: (QuizState) -> Unit) {
 

@@ -5,28 +5,47 @@ import androidx.annotation.RequiresApi
 import fr.uge.mobistory.database.HistoricalEventAndClaim
 import fr.uge.mobistory.historicalEvent.claim.ClaimEntity
 import fr.uge.mobistory.utils.*
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.*
+import kotlin.Comparator
 
 /**
  * Tri par date
  */
-@RequiresApi(Build.VERSION_CODES.O)
 fun sortByDate(events: List<HistoricalEventAndClaim>): List<HistoricalEventAndClaim> {
-    return events.sortedWith(Comparator { event1, event2 ->
-        val date1 = extractDatesFromClaims(event1.claims)
-        val date2 = extractDatesFromClaims(event2.claims)
-        if (date1 != null && date2 != null) {
-            return@Comparator date2.compareTo(date1)
-        } else if (date1 != null) {
-            return@Comparator -1
-        } else if (date2 != null) {
-            return@Comparator 1
+    return events.sortedBy { event ->
+        val date = extractDateFromClaimsForSort(event.claims)
+        date?.time ?: 0
+    }
+}
+fun extractDateFromClaimsForSort(claims: List<ClaimEntity>): Date? {
+
+    for (claim in claims) {
+        val verboseName = claim.verboseName
+        val value = claim.value
+
+        if (verboseName == "fr:date de début||en:start time") {
+            return extractValue(value.orEmpty())
+        } else if (verboseName == "fr:date||en:point in time") {
+            return extractValue(value.orEmpty())
         }
-        return@Comparator 0
-    })
+    }
+    return null
 }
 
+fun extractValue(value: String): Date? {
+    val datePrefix = "date:"
+    val formatter = SimpleDateFormat("yyyy-MM-dd")
+    val date =  value.substringAfter(datePrefix)
+    return try {
+        formatter.parse(date)
+    } catch (e: Exception) {
+        null
+    }
+
+}
 
 /**
  * Tri par localisation

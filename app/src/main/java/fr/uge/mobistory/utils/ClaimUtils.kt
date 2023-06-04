@@ -15,9 +15,12 @@ fun extractDatesFromClaims(claims: List<ClaimEntity>): String? {
     val datePeriod = extractDatesPeriodFromClaims(claims);
     return if (datePeriod.first != null && datePeriod.second == null) {
         " ${datePeriod.first}"
-    } else if(datePeriod.first != null && datePeriod.first == datePeriod.second) {
+    } else if(datePeriod.first != null && datePeriod.first == datePeriod.second && extractDatesPunctualFromClaims(claims) != null) {
         extractDatesPunctualFromClaims(claims)
-    }else if (datePeriod.first != null && datePeriod.second != null) {
+    }else if(datePeriod.first != null && datePeriod.first == datePeriod.second){
+        " ${datePeriod.first}"
+    }
+    else if (datePeriod.first != null && datePeriod.second != null) {
         " de ${datePeriod.first} à ${datePeriod.second}"
     } else {
         extractDatesPunctualFromClaims(claims)
@@ -64,9 +67,13 @@ fun extractDateFromValue(value: String): String? {
     if (value.startsWith(datePrefix)) {
         val dateValue = value.substringAfter(datePrefix)
         val component = dateValue.split("-")
+        Log.d("DATE", "dateValue ${dateValue}")
+        Log.d("DATE", "component ${component}")
 
         if (component.size == 4) {
             val year = component[1]
+            Log.d("DATE", "year ${year}")
+
             return "-${year} av. J-C"
         }
         if (component.size == 3) {
@@ -81,6 +88,8 @@ fun extractDateFromValue(value: String): String? {
             }
 
             date = component[0]
+            Log.d("DATE", "date ${date}")
+
         } else if(component.size == 1){
             return component[0]
         }
