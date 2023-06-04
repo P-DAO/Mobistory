@@ -64,7 +64,7 @@ enum class DisplayState {
     EVENT,
     EVENTS,
     TIMELINE,
-    QUIZ
+    QUIZ,
     FAVORITE
 }
 
