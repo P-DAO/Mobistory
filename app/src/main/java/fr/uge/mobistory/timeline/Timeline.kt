@@ -93,8 +93,6 @@ fun TimelineDisplayer(events: List<HistoricalEventAndClaim>) {
         Expression.EXPR5.regex.matches(extractDatesFromClaims(it.claims)!!)
     }
 
-    treatedEvents = treatedEvents.sortedBy { event -> extractDateFromString(extractDatesFromClaims(event.claims)!!)  }
-
     for (event in treatedEvents) {
         dateEvent.merge(extractDateFromString(extractDatesFromClaims(event.claims)!!), arrayListOf(event)) { currentList, newList ->
             newAddAll(currentList, newList)
