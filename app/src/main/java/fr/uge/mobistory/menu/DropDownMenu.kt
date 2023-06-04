@@ -43,7 +43,16 @@ fun DropDownMenu(
                     expanded = false
                 }
             ) {
-                Text("Trier par date")
+                Text("Trier par date croissant")
+            }
+            DropdownMenuItem(
+                onClick = {
+                    selectedSortType = SortType.DATEBIS // Mettre à jour l'option de tri sélectionnée
+                    onSortTypeSelected.invoke(selectedSortType)
+                    expanded = false
+                }
+            ) {
+                Text("Trier par date decroissant")
             }
             DropdownMenuItem(
                 onClick = {

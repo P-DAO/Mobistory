@@ -15,6 +15,13 @@ fun sortByDate(events: List<HistoricalEventAndClaim>): List<HistoricalEventAndCl
         date?.time ?: 0
     }
 }
+
+fun sortByDateDescending(events: List<HistoricalEventAndClaim>): List<HistoricalEventAndClaim> {
+    return events.sortedByDescending { event ->
+        val date = extractDateFromClaimsForSort(event.claims)
+        date?.time ?: 0
+    }
+}
 fun extractDateFromClaimsForSort(claims: List<ClaimEntity>): Date? {
 
     for (claim in claims) {

@@ -44,6 +44,7 @@ fun displayAllEvents(
         }
         val sortedEvents = when (sortType) {
                 SortType.DATE -> sortByDate(filteredEvents)
+                SortType.DATEBIS -> sortByDateDescending(filteredEvents)
                 SortType.LABEL -> sortByLabel(filteredEvents)
                 SortType.LOCATION -> sortByLocation(filteredEvents)
                 SortType.POPULARITY -> sortByPopularity(filteredEvents)
