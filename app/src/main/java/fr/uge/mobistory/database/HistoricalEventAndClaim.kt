@@ -1,6 +1,7 @@
 package fr.uge.mobistory.database
 
 import androidx.room.Embedded
+import androidx.room.Entity
 import androidx.room.Relation
 import fr.uge.mobistory.historicalEvent.HistoricalEventEntity
 import fr.uge.mobistory.historicalEvent.claim.ClaimEntity
